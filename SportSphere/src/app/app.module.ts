@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';  // für API-Anfragen
+import { AppRoutingModule } from './app-routing.module'; // Routing-Modul importieren
 
 import { AppComponent } from './app.component';
 import { AboutComponent } from './about/about.component';
 import { AccountComponent } from './account/account.component';
 import { CreateComponent } from './create/create.component';
-import { NewsComponent } from './news/news.component';  // Deine Sportnachrichten-Komponente
+import { NewsComponent } from './news/news.component';
 
 @NgModule({
   declarations: [
@@ -14,11 +14,11 @@ import { NewsComponent } from './news/news.component';  // Deine Sportnachrichte
     AboutComponent,
     AccountComponent,
     CreateComponent,
-    NewsComponent  // Hier fügst du alle deine Komponenten hinzu
+    NewsComponent
   ],
   imports: [
     BrowserModule,
-    HttpClientModule  // Wenn du HTTP-Anfragen machst, musst du dies importieren
+    AppRoutingModule  // Das Routing-Modul wird weiterhin benötigt
   ],
   providers: [],
   bootstrap: [AppComponent]
