@@ -16,7 +16,7 @@ const uri = `mongodb://${username}:${password}@${host}:${port}/?authSource=admin
 
 async function connectToDatabase() {
     const client = new MongoClient(uri);
-
+    
     try {
         // Connect to the MongoDB cluster
         await client.connect();
