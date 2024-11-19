@@ -1,16 +1,10 @@
-<header>
-  <nav>
-    <ul>
-      <li><a routerLink="/news">Home</a></li>
-      <li><a routerLink="/about">About</a></li>
-      <li><a routerLink="/create">Create News</a></li>
-      <li><a routerLink="/account">Account</a></li>
-    </ul>
-  </nav>
-</header>
+<nav>
+  <ul style="background-color: black; color: white;">
+    <li><a routerLink="/about" routerLinkActive="active">About</a></li>
+    <li><a routerLink="/account" routerLinkActive="active">Account</a></li>
+    <li><a routerLink="/create" routerLinkActive="active">Create</a></li>
+    <li><a routerLink="/news" routerLinkActive="active">News</a></li>
+  </ul>
+</nav>
 
-<main>
-  <router-outlet></router-outlet>  <!-- Hier wird die aktuelle Komponente angezeigt -->
-</main>
-
-
+<router-outlet></router-outlet>
