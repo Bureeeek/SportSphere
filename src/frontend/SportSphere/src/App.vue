@@ -1,47 +1,63 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
-</script>
-
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
+  <div id="app" class="app-container">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <ul>
+        <li><router-link to="/news">News</router-link></li>
+        <li><router-link to="/create">Create</router-link></li>
+        <li><router-link to="/about">About</router-link></li>
+        <li><router-link to="/account">Account</router-link></li>
+      </ul>
+    </nav>
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+    <!-- Main Content -->
+    <main class="main-content">
+      <router-view></router-view>
+    </main>
+  </div>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
+<script>
+export default {
+  name: 'App'
+}
+</script>
+
+<style>
+/* Basic styles */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #1e1e2f;
+  color: white;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+.app-container {
+  display: flex;
+  height: 100vh;
 }
 
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
+.sidebar {
+  width: 200px;
+  background-color: #2a2a3d;
+  padding: 20px;
+}
 
-  .logo {
-    margin: 0 2rem 0 0;
-  }
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+}
 
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+.sidebar li {
+  margin: 15px 0;
+  font-size: 18px;
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 </style>
