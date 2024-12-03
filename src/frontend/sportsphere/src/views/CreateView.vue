@@ -64,6 +64,50 @@
   </div>
 </template>
 
-<script src="../js/CreateView.js"></script>
-<style scoped src="../css/CreateView.css"></style>
+<script>
+import axios from 'axios';
 
+export default {
+  data() {
+    return {
+      news: {
+        title: '',
+        summary: '',
+        category: '',
+        tags: '',
+        content: '',
+      },
+      mediaFiles: [],
+    };
+  },
+  methods: {
+    async submitForm() {
+      try {
+        const articleData = {
+          ...this.news,
+          tags: this.news.tags.split(',').map((tag) => tag.trim()), // Convert comma-separated tags to array
+          media: this.mediaFiles,
+          publicationDate: new Date().toISOString(), // Auto-generate publication date
+        };
+
+        const response = await axios.post('http://localhost:5000/api/news-articles', articleData);
+        alert('Article created successfully!');
+        console.log(response.data);
+      } catch (error) {
+        console.error('Error submitting form:', error);
+        alert('Failed to create article. Please try again.');
+      }
+    },
+    handleMediaUpload(event) {
+      const files = event.target.files;
+      this.mediaFiles = Array.from(files).map((file) => ({
+        type: file.type.startsWith('image') ? 'image' : 'video',
+        url: URL.createObjectURL(file),
+        caption: '',
+      }));
+    },
+  },
+};
+</script>
+
+<style scoped src="../css/CreateView.css"></style>
