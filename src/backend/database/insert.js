@@ -27,7 +27,7 @@ app.use(bodyParser.json());
 const client = new MongoClient(uri);
 
 // Route to insert a news article
-app.post('/api/news-articles', async (req, res) => {
+app.post('/api/create-article', async (req, res) => {
     try {
         await client.connect();
         const db = client.db(dbName);

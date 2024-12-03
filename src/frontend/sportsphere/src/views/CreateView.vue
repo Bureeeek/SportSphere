@@ -1,33 +1,33 @@
 <template>
   <div class="create-view">
-    <h1>Erstelle deinen Sportartikel</h1>
+    <h1>Create article</h1>
     <form @submit.prevent="submitForm">
       <div class="form-group">
-        <label for="title">Titel</label>
+        <label for="title">Summary</label>
         <input
           type="text"
           id="title"
           v-model="news.title"
-          placeholder="Titel eingeben"
+          placeholder="Enter your title"
           required
         />
       </div>
 
       <div class="form-group">
-        <label for="summary">Zusammenfassung</label>
+        <label for="summary">Summary</label>
         <textarea
           id="summary"
           v-model="news.summary"
-          placeholder="Zusammenfassung eingeben"
+          placeholder="This will be displayed on the news page"
           required
         ></textarea>
       </div>
 
       <div class="form-group">
-        <label for="category">Kategorie</label>
+        <label for="category">Category</label>
         <select id="category" v-model="news.category" required>
-          <option disabled value="">Kategorie wählen</option>
-          <option>Fußball</option>
+          <option disabled value="">Select category</option>
+          <option>Football</option>
           <option>Basketball</option>
           <option>Tennis</option>
           <option>Badminton</option>
@@ -40,7 +40,7 @@
           type="text"
           id="tags"
           v-model="news.tags"
-          placeholder="Tags durch Kommas trennen"
+          placeholder=""
         />
       </div>
 
@@ -55,11 +55,11 @@
       </div>
 
       <div class="form-group">
-        <label for="media">Medien (Bilder/Videos)</label>
+        <label for="media">Media</label>
         <input type="file" id="media" multiple @change="handleMediaUpload" />
       </div>
 
-      <button type="submit">Artikel erstellen</button>
+      <button type="submit">Create article</button>
     </form>
   </div>
 </template>
@@ -90,7 +90,7 @@ export default {
           publicationDate: new Date().toISOString(), // Auto-generate publication date
         };
 
-        const response = await axios.post('http://localhost:5000/api/news-articles', articleData);
+        const response = await axios.post('http://localhost:5000/api/create-article', articleData);
         alert('Article created successfully!');
         console.log(response.data);
       } catch (error) {
