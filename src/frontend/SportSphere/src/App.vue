@@ -41,6 +41,7 @@ body {
   width: 200px;
   background-color: #2a2a3d;
   padding: 20px;
+  text-align: center;
 }
 
 .sidebar ul {
@@ -51,6 +52,19 @@ body {
 .sidebar li {
   margin: 15px 0;
   font-size: 18px;
+}
+
+.sidebar li a {
+  background-color: #666; /* setzt die Hintergrundfarbe auf dunkelgrau */
+  color: white; /* setzt die Textfarbe auf weiß */
+  padding: 10px 20px; /* fügt einen Abstand zwischen dem Text und der Umrandung hinzu */
+  border-radius: 5px; /* rundet die Ecken der Buttons */
+  text-decoration: none; /* entfernt die Unterstreichung des Links */
+  display: block; /* macht den Link zu einem Block-Element, um ihn zu zentrieren */
+}
+
+.sidebar li a:hover {
+  background-color: #ccc; /* setzt die Hintergrundfarbe auf hellgrau beim Hover */
 }
 
 .main-content {
