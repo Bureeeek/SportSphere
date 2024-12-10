@@ -1,5 +1,5 @@
 <template>
-  <div :class="['app-container', isDarkMode ? 'dark-mode' : 'light-mode']" id="app">
+  <div :class="['app-container', theme]">
     <!-- Sidebar -->
     <nav class="sidebar">
       <ul>
@@ -7,13 +7,10 @@
         <li><router-link to="/create">Create</router-link></li>
         <li><router-link to="/about">About</router-link></li>
         <li><router-link to="/account">Account</router-link></li>
-        <li>
-          <button @click="toggleDarkMode" class="toggle-btn">
-            {{ isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode' }}
-          </button>
-        </li>
       </ul>
-      
+      <button @click="toggleTheme" class="toggle-btn">
+        {{ theme === 'dark-mode' ? 'Switch to Light Mode' : 'Switch to Dark Mode' }}
+      </button>
     </nav>
 
     <!-- Main Content -->
@@ -24,23 +21,38 @@
 </template>
 
 <script>
+import { provide, reactive, computed } from 'vue';
+
 export default {
   name: 'App',
-  data() {
-    return {
-      isDarkMode: true, // Default mode
+  setup() {
+    // Reactive state for theme
+    const state = reactive({
+      isDarkMode: true, // Default theme
+    });
+
+    // Computed property for theme class
+    const theme = computed(() => (state.isDarkMode ? 'dark-mode' : 'light-mode'));
+
+    // Toggle theme method
+    const toggleTheme = () => {
+      state.isDarkMode = !state.isDarkMode;
     };
-  },
-  methods: {
-    toggleDarkMode() {
-      this.isDarkMode = !this.isDarkMode;
-    },
+
+    // Provide theme and toggle function
+    provide('theme', theme);
+    provide('toggleTheme', toggleTheme);
+
+    return {
+      theme,
+      toggleTheme,
+    };
   },
 };
 </script>
 
 <style>
-/* Basic styles */
+/* Shared Styles */
 body {
   margin: 0;
   font-family: Arial, sans-serif;
@@ -51,7 +63,7 @@ body {
   height: 100vh;
 }
 
-/* Sidebar styles */
+/* Sidebar */
 .sidebar {
   width: 200px;
   padding: 20px;
@@ -71,7 +83,7 @@ body {
   margin-top: 20px;
   padding: 10px;
   font-size: 14px;
-  background-color: #00000000;
+  background-color: #444;
   color: white;
   border: none;
   cursor: pointer;
@@ -79,19 +91,10 @@ body {
 }
 
 .toggle-btn:hover {
-  background-color: #00000000;
+  background-color: #666;
 }
 
-/* Main content styles */
-.main-content {
-  flex: 1;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-/* Dark mode styles */
+/* Dark Mode */
 .dark-mode {
   background-color: #1e1e2f;
   color: white;
@@ -101,12 +104,7 @@ body {
   background-color: #2a2a3d;
 }
 
-.dark-mode .toggle-btn {
-  background-color: #00000000;
-  color: white;
-}
-
-/* Light mode styles */
+/* Light Mode */
 .light-mode {
   background-color: #f4f4f9;
   color: black;
@@ -114,7 +112,6 @@ body {
 
 .light-mode .sidebar {
   background-color: #fff;
-  color: black;
   border-right: 1px solid #ddd;
 }
 
@@ -127,3 +124,4 @@ body {
   background-color: #bbb;
 }
 </style>
+  
