@@ -22,13 +22,19 @@ select {
 }
 
 button {
-    padding: 0.7em 1.5em;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
+    display: inline-block; /* Allows centering */
+    padding: 12px 24px; /* Increased padding for a larger button */
+    font-size: 16px; /* Slightly larger font size */
+    color: white; /* Text color */
+    background-color: #7d7d7d; /* Grey background */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    text-align: center; /* Center text */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+    margin: 10px; /* Space between buttons */
 }
 
 button:hover {
-    background-color: #0056b3;
+    background-color: #a9a9a9; /* Light grey on hover */
 }
