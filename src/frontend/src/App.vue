@@ -71,8 +71,11 @@ body {
 }
 
 .sidebar ul {
-  list-style-type: none;
+   list-style-type: none;
   padding: 0;
+  display: flex;
+  flex-direction: column; /* Spread buttons vertically */
+  gap: 15px; /* Adds space between buttons */
 }
 
 .sidebar li {
@@ -81,7 +84,7 @@ body {
 }
 
 .sidebar li a {
-  background-color: #666; /* setzt die Hintergrundfarbe auf dunkelgrau */
+ 
   color: white; /* setzt die Textfarbe auf weiß */
   padding: 10px 20px; /* fügt einen Abstand zwischen dem Text und der Umrandung hinzu */
   border-radius: 5px; /* rundet die Ecken der Buttons */
