@@ -55,90 +55,168 @@ export default {
 /* Shared Styles */
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: 'Roboto', sans-serif; /* Professionellere Schriftart */
+  background-color: var(--background-color);
 }
 
+/* Container für die gesamte App */
 .app-container {
   display: flex;
   height: 100vh;
+  flex-direction: row;
+  overflow: hidden;
+  transition: all 0.3s ease;
 }
 
 /* Sidebar */
 .sidebar {
-  width: 200px;
-  padding: 20px;
-  text-align: center;
+  width: 250px;
+  padding: 30px;
+  background-color: var(--sidebar-bg);
+  color: var(--sidebar-text);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
 }
 
+/* Sidebar Links */
 .sidebar ul {
-   list-style-type: none;
+  list-style-type: none;
   padding: 0;
   display: flex;
-  flex-direction: column; /* Spread buttons vertically */
-  gap: 15px; /* Adds space between buttons */
+  flex-direction: column;
+  gap: 20px;
 }
 
 .sidebar li {
-  margin: 15px 0;
   font-size: 18px;
 }
 
 .sidebar li a {
- 
-  color: white; /* setzt die Textfarbe auf weiß */
-  padding: 10px 20px; /* fügt einen Abstand zwischen dem Text und der Umrandung hinzu */
-  border-radius: 5px; /* rundet die Ecken der Buttons */
-  text-decoration: none; /* entfernt die Unterstreichung des Links */
-  display: block; /* macht den Link zu einem Block-Element, um ihn zu zentrieren */
+  color: var(--link-color);
+  padding: 12px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  display: block;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
 }
 
 .sidebar li a:hover {
-  background-color: #ccc; /* setzt die Hintergrundfarbe auf hellgrau beim Hover */
+  background-color: var(--link-hover-bg);
+  color: var(--link-hover-color);
 }
 
 .toggle-btn {
-  margin-top: 20px;
-  padding: 10px;
-  font-size: 14px;
-  background-color: #444;
+  margin-bottom: 40px;
+  padding: 12px 20px;
+  font-size: 16px;
+  background-color: var(--button-bg);
   color: white;
   border: none;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
 }
 
 .toggle-btn:hover {
-  background-color: #666;
+  background-color: var(--button-hover-bg);
 }
 
 /* Dark Mode */
 .dark-mode {
-  background-color: #1e1e2f;
-  color: white;
-}
-
-.dark-mode .sidebar {
-  background-color: #2a2a3d;
+  --background-color: #1e1e2f;
+  --sidebar-bg: #2a2a3d;
+  --sidebar-text: white;
+  --link-color: white;
+  --link-hover-bg: #444;
+  --link-hover-color: #f4f4f9;
+  --button-bg: #444;
+  --button-hover-bg: #666;
 }
 
 /* Light Mode */
 .light-mode {
-  background-color: #f4f4f9;
-  color: black;
+  --background-color: #f4f4f9;
+  --sidebar-bg: #ffffff;
+  --sidebar-text: black;
+  --link-color: #333;
+  --link-hover-bg: #ddd;
+  --link-hover-color: #333;
+  --button-bg: #ddd;
+  --button-hover-bg: #bbb;
 }
 
-.light-mode .sidebar {
-  background-color: #fff;
-  border-right: 1px solid #ddd;
+/* Main Content Area */
+.main-content {
+  flex-grow: 1;
+  padding: 20px;
+  overflow-y: auto;
+  background-color: var(--background-color);
+  transition: all 0.3s ease;
 }
 
-.light-mode .toggle-btn {
-  background-color: #ddd;
-  color: black;
+/* Responsive Styles */
+@media (max-width: 1024px) {
+  .app-container {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+    box-shadow: none;
+  }
+
+  .main-content {
+    margin-top: 20px;
+  }
 }
 
-.light-mode .toggle-btn:hover {
-  background-color: #bbb;
+@media (max-width: 768px) {
+  .sidebar {
+    padding: 20px;
+  }
+
+  .sidebar ul {
+    gap: 15px;
+  }
+
+  .sidebar li a {
+    font-size: 16px;
+    padding: 10px 15px;
+  }
+
+  .toggle-btn {
+    width: 100%;
+    font-size: 14px;
+  }
+
+  .main-content {
+    padding: 15px;
+  }
 }
+
+@media (max-width: 480px) {
+  .sidebar {
+    width: 100%;
+    padding: 15px;
+  }
+
+  .sidebar li a {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+
+  .toggle-btn {
+    font-size: 14px;
+    padding: 10px;
+  }
+}
+
 </style>
   

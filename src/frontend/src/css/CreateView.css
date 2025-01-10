@@ -1,40 +1,175 @@
+/* Container für das Erstellen-Formular */
 .create-view {
-    max-width: 600px;
+    max-width: 700px;
     margin: 0 auto;
+    padding: 30px;
+    background-color: var(--form-bg);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
 }
 
-.form-group {
-    margin-bottom: 1em;
+/* Überschrift */
+.create-view h1 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: var(--primary-text-color);
+    text-align: center;
+    font-weight: 600;
 }
 
-label {
+/* Formularbereich */
+.create-view .form-group {
+    margin-bottom: 1.5em;
+}
+
+/* Beschriftung für Formularfelder */
+.create-view label {
     display: block;
     font-weight: bold;
     margin-bottom: 0.5em;
+    font-size: 16px;
+    color: var(--primary-text-color);
 }
 
-input,
-textarea,
-select {
+/* Eingabefelder (input, textarea, select) */
+.create-view input,
+.create-view textarea,
+.create-view select {
     width: 100%;
-    padding: 0.5em;
-    margin-bottom: 0.5em;
+    padding: 12px;
+    margin-bottom: 1em;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    background-color: var(--input-bg);
+    transition: border-color 0.3s ease;
 }
 
-button {
-    display: inline-block; /* Allows centering */
-    padding: 12px 24px; /* Increased padding for a larger button */
-    font-size: 16px; /* Slightly larger font size */
-    color: white; /* Text color */
-    background-color: #7d7d7d; /* Grey background */
-    border: none; /* No border */
-    border-radius: 5px; /* Rounded corners */
-    text-align: center; /* Center text */
-    cursor: pointer; /* Pointer cursor on hover */
-    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
-    margin: 10px; /* Space between buttons */
+.create-view input:focus,
+.create-view textarea:focus,
+.create-view select:focus {
+    border-color: #4a90e2;
+    outline: none;
 }
 
-button:hover {
-    background-color: #a9a9a9; /* Light grey on hover */
+/* Textarea speziell */
+.create-view textarea {
+    min-height: 150px;
+}
+
+/* Button Design */
+.create-view button {
+    padding: 12px 24px;
+    font-size: 16px;
+    color: white;
+    background-color: #4a90e2;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.create-view button:hover {
+    background-color: #357ab7;
+}
+
+/* Media Upload Eingabefeld */
+.create-view input[type="file"] {
+    padding: 8px 0;
+    font-size: 16px;
+    border-radius: 6px;
+    background-color: #f4f4f9;
+    width: 100%;
+}
+
+/* Dark Mode */
+.dark-mode .create-view {
+    background-color: #2a2a3d;
+}
+
+.dark-mode .create-view label,
+.dark-mode .create-view h1 {
+    color: white;
+}
+
+.dark-mode .create-view input,
+.dark-mode .create-view textarea,
+.dark-mode .create-view select {
+    background-color: #444;
+    color: white;
+    border-color: #666;
+}
+
+.dark-mode .create-view button {
+    background-color: #444;
+}
+
+.dark-mode .create-view button:hover {
+    background-color: #666;
+}
+
+/* Light Mode */
+.light-mode .create-view {
+    background-color: white;
+}
+
+.light-mode .create-view label,
+.light-mode .create-view h1 {
+    color: black;
+}
+
+.light-mode .create-view input,
+.light-mode .create-view textarea,
+.light-mode .create-view select {
+    background-color: #f4f4f9;
+    color: black;
+    border-color: #ddd;
+}
+
+.light-mode .create-view button {
+    background-color: #4a90e2;
+}
+
+.light-mode .create-view button:hover {
+    background-color: #357ab7;
+}
+
+/* Responsives Design für kleinere Bildschirme */
+@media (max-width: 768px) {
+    .create-view {
+        width: 90%;
+        padding: 20px;
+    }
+
+    .create-view h1 {
+        font-size: 24px;
+    }
+
+    .create-view button {
+        width: 100%;
+    }
+
+    .create-view input,
+    .create-view textarea,
+    .create-view select {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .create-view {
+        width: 100%;
+        padding: 15px;
+    }
+
+    .create-view h1 {
+        font-size: 20px;
+    }
+
+    .create-view button {
+        padding: 10px 20px;
+    }
 }
