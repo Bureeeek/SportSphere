@@ -1,51 +1,54 @@
+import express from 'express';
 import { MongoClient } from 'mongodb';
-import dotenv from 'dotenv';
+import 'dotenv/config';
+import cors from 'cors';
 
-// Load environment variables
-dotenv.config();
-
-// MongoDB connection details
 const username = process.env.MONGO_USERNAME;
 const password = process.env.MONGO_PASSWORD;
 const host = process.env.MONGO_HOST;
 const port = process.env.MONGO_PORT;
 const dbName = process.env.MONGO_DB_NAME;
+const collectionName = process.env.MONGO_COLLECTION_NAME;
 
-// Connection URI
 const uri = `mongodb://${username}:${password}@${host}:${port}/?authSource=admin`;
 
-async function readAllData() {
-  const client = new MongoClient(uri);
+const app = express();
+
+// Enable CORS for all routes
+app.use(cors()); // Default: allows all origins
+
+// Route to fetch articles
+app.get('/api/articles', async (req, res) => {
+  let client;
 
   try {
-    // Connect to MongoDB
-    await client.connect();
+    client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     console.log('Connected to MongoDB');
 
-    // Access the database
     const db = client.db(dbName);
+    const articles = await db.collection(collectionName).find().toArray();
 
-    // Get all collections in the database
-    const collections = await db.listCollections().toArray();
-
-    // Iterate through each collection and retrieve all documents
-    for (const collectionInfo of collections) {
-      const collectionName = collectionInfo.name;
-      const collection = db.collection(collectionName);
-      
-      console.log(`Reading data from collection: ${collectionName}`);
-      const documents = await collection.find({}).toArray();
-
-      console.log(`Documents in ${collectionName}:`, documents);
-    }
-
+    console.log('Fetched Articles:', articles); // Log the fetched data
+    res.json(
+      articles.map(article => ({
+        ...article,
+        tags: article.tags || [], // Ensure tags is always an array
+        publicationDate: article.publicationDate || null, // Ensure publicationDate is always present
+      }))
+    );
+    
   } catch (err) {
-    console.error('Error reading data:', err);
+    console.error('Error:', err);
+    res.status(500).json({ error: 'Failed to fetch articles' });
   } finally {
-    // Close the connection
-    await client.close();
-    console.log('Connection closed');
+    if (client) {
+      await client.close();
+    }
   }
-}
+});
 
-readAllData();
+// Start the server
+const PORT = 5001;
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
