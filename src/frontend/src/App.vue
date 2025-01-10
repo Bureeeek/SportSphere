@@ -3,7 +3,7 @@
     <!-- Sidebar -->
     <nav class="sidebar">
       <ul>
-        <li><router-link to="/news">News</router-link></li>
+        <li><router-link to="/#">News</router-link></li>
         <li><router-link to="/create">Create</router-link></li>
         <li><router-link to="/about">About</router-link></li>
         <li><router-link to="/account">Account</router-link></li>
