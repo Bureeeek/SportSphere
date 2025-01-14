@@ -156,8 +156,10 @@ body {
   padding: 20px;
   overflow-y: auto;
   background-color: var(--background-color);
+  color: var(--sidebar-text); /* Textfarbe angepasst an die Sidebar-Textfarbe */
   transition: all 0.3s ease;
 }
+
 
 /* Responsive Styles */
 @media (max-width: 1024px) {
