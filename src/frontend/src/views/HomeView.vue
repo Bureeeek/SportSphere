@@ -1,15 +1,24 @@
 <template>
-  <div class="home">
+  <div class="news-page">
     <h1>News Articles</h1>
-    <div v-if="loading">Loading articles...</div>
-    <div v-else-if="error">Error: {{ error }} <button @click="fetchArticles()">Reload</button></div>
+
+    <div v-if="loading" class="loading">Loading articles...</div>
+    <div v-else-if="error" class="error">
+      Error: {{ error }} <button @click="fetchArticles()">Reload</button>
+    </div>
+
     <div v-else>
-      <div v-for="article in articles" :key="article._id" class="article">
-        <h2>{{ article.title }}</h2>
-        <p><strong>Summary:</strong> {{ article.summary }}</p>
-        <p><strong>Category:</strong> {{ article.category }}</p>
-        <p><strong>Tags:</strong> {{ article.tags.join(', ') }}</p>
-        <p><strong>Publication Date:</strong> {{ new Date(article.publicationDate).toLocaleDateString() }}</p>
+      <div v-for="article in articles" :key="article._id" class="article-card">
+        <div class="article-image-container">
+          <img :src="article.imageUrl" alt="Article image" class="article-image" />
+        </div>
+        <div class="article-content">
+          <h2>{{ article.title }}</h2>
+          <p><strong>Summary:</strong> {{ article.summary }}</p>
+          <p><strong>Category:</strong> {{ article.category }}</p>
+          <p><strong>Tags:</strong> {{ article.tags.join(', ') }}</p>
+          <p><strong>Publication Date:</strong> {{ new Date(article.publicationDate).toLocaleDateString() }}</p>
+        </div>
       </div>
     </div>
   </div>
@@ -17,7 +26,7 @@
 
 <script>
 import axios from 'axios';
-  
+
 export default {
   name: 'HomeView',
   data() {
@@ -47,15 +56,67 @@ export default {
 };
 </script>
 
-<style>
-.home {
+<style scoped>
+.news-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   padding: 20px;
+  background-color: #121212;
+  color: #fff;
 }
 
-.article {
-  border: 1px solid #ccc;
+.loading,
+.error {
+  font-size: 16px;
+  color: #aaa;
+}
+
+.error button {
+  margin-top: 10px;
+  padding: 5px 10px;
+  background-color: #ff5733;
+  color: #fff;
+  border: none;
   border-radius: 5px;
-  margin-bottom: 20px;
-  padding: 15px;
+  cursor: pointer;
+}
+
+.article-card {
+  background-color: #1e1e1e;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+}
+
+.article-image-container {
+  width: 100%;
+  height: 150px;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.article-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.article-content {
+  padding: 10px;
+}
+
+.article-content h2 {
+  font-size: 20px;
+  margin: 0;
+}
+
+.article-content p {
+  font-size: 14px;
+  color: #aaa;
+  margin: 5px 0;
 }
 </style>
