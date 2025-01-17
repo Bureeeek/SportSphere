@@ -1,40 +1,87 @@
 .about-page {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
-  }
-  
-  .about-header h1 {
-    text-align: center;
-    color: #2c3e50;
-    margin-bottom: 20px;
-  }
-  
-  .about-intro,
-  .about-mission,
-  .about-team,
-  .about-vision {
-    margin-bottom: 30px;
-  }
-  
-  h2 {
-    color: #34495e;
-    margin-bottom: 10px;
-  }
-  
-  .team-list {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .team-list li {
-    margin: 5px 0;
-  }
-  
-  .about-footer {
-    text-align: center;
-    font-size: 0.9rem;
-    color: #7f8c8d;
-  }
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+}
+
+/* Header Section */
+.about-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.about-header h1 {
+  color: #2c3e50;
+}
+
+.about-description {
+  font-size: 1.1rem;
+  color: #34495e;
+}
+
+/* Container for each section */
+.about-container {
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Section Image */
+.section-image {
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+}
+
+/* Section Content */
+.section-content {
+  text-align: left;
+}
+
+.section-content h2 {
+  color: #34495e;
+  font-weight: bold;
+}
+
+.section-content p {
+  color: #7f8c8d;
+}
+
+/* Contact Section */
+.contact-container {
+  margin-top: 40px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+}
+
+.contact-container h2 {
+  color: #34495e;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.contact-content {
+  text-align: center;
+}
+
+.contact-content p {
+  margin: 5px 0;
+  font-size: 1rem;
+  color: #7f8c8d;
+}
+
+.contact-map-image {
+  margin-top: 10px;
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+  cursor: pointer;
+}
