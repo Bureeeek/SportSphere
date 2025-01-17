@@ -144,13 +144,14 @@ export default {
     async handleRegister() {
       if (this.registerValid) {
         try {
-          /*const response = await axios.post("http://localhost:5000/api/register", {
+          const response = await axios.post("http://localhost:5500/api/register", {
             email: this.email.value,
             firstName: this.firstName,
             lastName: this.lastName,
             password: this.password.value,
-          });*/
+          });
           alert("Registration successful! Check your email for verification.");
+          return response;
         } catch (error) {
           console.error("Registration failed:", error);
           alert("Registration failed. Please try again.");
@@ -160,7 +161,7 @@ export default {
     async handleSignIn() {
       if (this.loginValid) {
         try {
-          const response = await axios.post("http://localhost:5000/api/login", {
+          const response = await axios.post("http://localhost:5500/api/login", {
             email: this.email.value,
             password: this.password.value,
           });

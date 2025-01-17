@@ -11,7 +11,7 @@ import nodemailer from 'nodemailer';
 dotenv.config();
 
 const app = express();
-const serverPort = 5000;
+const serverPort = 5500;
 
 // MongoDB connection details
 const username = process.env.MONGO_USERNAME;
@@ -39,7 +39,7 @@ const transporter = nodemailer.createTransport({
 });
 
 // Helper function to send verification email
-async function sendVerificationEmail(email, token) {
+async function sendVerificationEmail(email, token) {    
   const verificationLink = `http://localhost:${serverPort}/api/verify-email?token=${token}`;
   const mailOptions = {
     from: process.env.EMAIL_USERNAME,
