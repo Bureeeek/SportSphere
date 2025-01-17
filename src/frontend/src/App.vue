@@ -26,20 +26,16 @@ import { provide, reactive, computed } from 'vue';
 export default {
   name: 'App',
   setup() {
-    // Reactive state for theme
     const state = reactive({
-      isDarkMode: true, // Default theme
+      isDarkMode: true,
     });
 
-    // Computed property for theme class
     const theme = computed(() => (state.isDarkMode ? 'dark-mode' : 'light-mode'));
 
-    // Toggle theme method
     const toggleTheme = () => {
       state.isDarkMode = !state.isDarkMode;
     };
 
-    // Provide theme and toggle function
     provide('theme', theme);
     provide('toggleTheme', toggleTheme);
 
@@ -55,11 +51,11 @@ export default {
 /* Shared Styles */
 body {
   margin: 0;
-  font-family: 'Roboto', sans-serif; /* Professionellere Schriftart */
+  font-family: 'Roboto', sans-serif;
   background-color: var(--background-color);
 }
 
-/* Container für die gesamte App */
+/* Container */
 .app-container {
   display: flex;
   height: 100vh;
@@ -78,11 +74,10 @@ body {
   flex-direction: column;
   justify-content: space-between;
   height: 100vh;
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
   transition: all 0.3s ease;
 }
 
-/* Sidebar Links */
 .sidebar ul {
   list-style-type: none;
   padding: 0;
@@ -128,38 +123,37 @@ body {
 
 /* Dark Mode */
 .dark-mode {
-  --background-color: #1e1e2f;
-  --sidebar-bg: #2a2a3d;
-  --sidebar-text: white;
-  --link-color: white;
-  --link-hover-bg: #444;
-  --link-hover-color: #f4f4f9;
-  --button-bg: #444;
-  --button-hover-bg: #666;
+  --background-color: #0d1117;
+  --sidebar-bg: #161b22;
+  --sidebar-text: #ffffff;
+  --link-color: #c9d1d9;
+  --link-hover-bg: #1f2937;
+  --link-hover-color: #58a6ff;
+  --button-bg: #21262d;
+  --button-hover-bg: #30363d;
 }
 
 /* Light Mode */
 .light-mode {
   --background-color: #f4f4f9;
   --sidebar-bg: #ffffff;
-  --sidebar-text: black;
-  --link-color: #333;
-  --link-hover-bg: #ddd;
-  --link-hover-color: #333;
-  --button-bg: #ddd;
-  --button-hover-bg: #bbb;
+  --sidebar-text: #333333;
+  --link-color: #0056b3;
+  --link-hover-bg: #e0e0e0;
+  --link-hover-color: #0056b3;
+  --button-bg: #d1d5db;
+  --button-hover-bg: #9ca3af;
 }
 
-/* Main Content Area */
+/* Main Content */
 .main-content {
   flex-grow: 1;
   padding: 20px;
   overflow-y: auto;
   background-color: var(--background-color);
-  color: var(--sidebar-text); /* Textfarbe angepasst an die Sidebar-Textfarbe */
+  color: var(--sidebar-text);
   transition: all 0.3s ease;
 }
-
 
 /* Responsive Styles */
 @media (max-width: 1024px) {
@@ -219,6 +213,4 @@ body {
     padding: 10px;
   }
 }
-
 </style>
-  

@@ -7,8 +7,13 @@
     "express": "^4.21.2",
     "mongodb": "^6.12.0",
     "mongoose": "^8.9.5",
+<<<<<<< Updated upstream
     "mysql": "^2.18.1",
     "nodemailer": "^6.9.16"
+=======
+    "multer": "^1.4.5-lts.1",
+    "mysql": "^2.18.1"
+>>>>>>> Stashed changes
   },
   "type": "module"
 }

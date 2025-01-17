@@ -81,23 +81,34 @@ export default {
     };
   },
   methods: {
-    async submitForm() {
-      try {
-        const articleData = {
-          ...this.news,
-          tags: this.news.tags.split(',').map((tag) => tag.trim()), // Convert comma-separated tags to array
-          media: this.mediaFiles,
-          publicationDate: new Date().toISOString(), // Auto-generate publication date
-        };
+async submitForm() {
+  try {
+    const formData = new FormData();
+    formData.append('title', this.news.title);
+    formData.append('summary', this.news.summary);
+    formData.append('category', this.news.category);
+    formData.append('tags', this.news.tags);
+    formData.append('content', this.news.content);
+    formData.append('publicationDate', new Date().toISOString());
 
-        const response = await axios.post('http://localhost:5000/api/create-article', articleData);
-        alert('Article created successfully!');
-        console.log(response.data);
-      } catch (error) {
-        console.error('Error submitting form:', error);
-        alert('Failed to create article. Please try again.');
-      }
-    },
+    // Füge jedes Bild zu FormData hinzu
+    this.mediaFiles.forEach((file) => {
+      formData.append('media', file);
+    });
+
+    // Sende das Formular an den Server
+    const response = await axios.post('http://localhost:5000/api/create-article', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+
+    alert('Article created successfully!');
+    console.log(response.data);
+  } catch (error) {
+    console.error('Error submitting form:', error);
+    alert('Failed to create article. Please try again.');
+  }
+},
+
     handleMediaUpload(event) {
       const files = event.target.files;
       this.mediaFiles = Array.from(files).map((file) => ({
