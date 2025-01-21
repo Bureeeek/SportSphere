@@ -21,14 +21,14 @@
           <h2>{{ articles[0].title }}</h2>
           <p><strong>Summary:</strong> {{ articles[0].summary }}</p>
           <p><strong>Category:</strong> {{ articles[0].category }}</p>
-          <p><strong>Tags:</strong> {{ articles[0].tags.join(', ') }}</p>
+          <p><strong>Tags:</strong> {{ articles[0].tags ? articles[0].tags.join(', ') : 'No tags available' }}</p>
           <p><strong>Publication Date:</strong> {{ new Date(articles[0].publicationDate).toLocaleDateString() }}</p>
         </div>
       </div>
 
       <div class="secondary-articles">
         <div 
-          v-for="(article) in articles.slice(1)" 
+          v-for="article in articles.slice(1)" 
           :key="article._id" 
           class="secondary-article" 
         >
@@ -54,25 +54,31 @@ export default {
   name: 'HomeView',
   data() {
     return {
-      articles: [], // Liste der Artikel
-      loading: true, // Ladeanzeige
-      error: null, // Fehlernachricht
+      articles: [],
+      loading: true,
+      error: null,
     };
   },
   created() {
-    this.fetchArticles(); // Artikel abrufen, sobald die Komponente erstellt wird
+    this.fetchArticles(); 
   },
   methods: {
     async fetchArticles() {
-      this.loading = true; // Ladeanzeige aktivieren
+      this.loading = true;
       try {
-        const response = await axios.get('http://localhost:5001/api/articles'); // Artikel abrufen
-        this.articles = response.data; // Daten speichern
+        const response = await axios.get('http://localhost:5001/api/articles');
+        // Prüfe die Antwort vom Server
+        console.log(response.data);
+        this.articles = response.data.map(article => ({
+          ...article,
+          // Stelle sicher, dass imageUrl korrekt gesetzt wird
+          imageUrl: article.media.length > 0 ? `http://localhost:5000/api/media/${article.media[0]}` : '', // Erste Media als Bild-URL
+        }));
       } catch (err) {
-        this.error = 'Failed to load articles. Please try again later.'; // Fehlernachricht speichern
+        this.error = 'Failed to load articles. Please try again later.';
         console.error(err);
       } finally {
-        this.loading = false; // Ladeanzeige deaktivieren
+        this.loading = false;
       }
     },
   },
@@ -85,32 +91,29 @@ export default {
   flex-direction: column;
   gap: 20px;
   padding: 20px;
-  color: #fff; /* Weißer Text */
+  color: #fff;
 }
 
-/* Lade- und Fehleranzeige */
-.loading,
-.error {
+.loading, .error {
   font-size: 16px;
-  color: #aaa; /* Grauer Text */
+  color: #aaa;
 }
 
 .error button {
   margin-top: 10px;
   padding: 5px 10px;
-  background-color: #ff5733; /* Auffällige Fehlerfarbe */
+  background-color: #ff5733;
   color: #fff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
 }
 
-/* Hauptartikel */
 .main-article {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  background-color: #1e1e1e; /* Abgesetzter Hintergrund */
+  background-color: #1e1e1e;
   border-radius: 10px;
   overflow: hidden;
   padding: 20px;
@@ -128,10 +131,9 @@ export default {
   margin: 0;
 }
 
-/* Sekundäre Artikel */
 .secondary-articles {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* Zweier-Gruppen */
+  grid-template-columns: repeat(2, 1fr);
   gap: 20px;
 }
 
