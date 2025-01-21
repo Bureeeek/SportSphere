@@ -12,13 +12,11 @@
   margin-bottom: 40px;
 }
 
-.about-header h1 {
-  color: #2c3e50;
-}
+
 
 .about-description {
   font-size: 1.1rem;
-  color: #34495e;
+
 }
 
 /* Container for each section */
@@ -42,12 +40,12 @@
 }
 
 .section-content h2 {
-  color: #34495e;
+
   font-weight: bold;
 }
 
 .section-content p {
-  color: #7f8c8d;
+
 }
 
 /* Contact Section */
@@ -57,7 +55,7 @@
 }
 
 .contact-container h2 {
-  color: #34495e;
+
   font-weight: bold;
   margin-bottom: 20px;
 }
@@ -69,7 +67,7 @@
 .contact-content p {
   margin: 5px 0;
   font-size: 1rem;
-  color: #7f8c8d;
+
 }
 
 .contact-map-image {
