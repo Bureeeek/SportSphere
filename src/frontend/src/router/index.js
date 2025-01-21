@@ -21,11 +21,13 @@ const routes = [
     path: "/create",
     name: "create",
     component: CreateView,
+    meta: { requiresAuth: true },
   },
   {
     path: "/account",
     name: "account",
     component: AccountView,
+    meta: { requiresAuth: true }, // Add metadata to mark routes that need authentication
   },
   {
     path: "/news",
@@ -42,6 +44,21 @@ const routes = [
 const router = createRouter({
   history: createWebHashHistory(),
   routes,
+});
+
+// Navigation guard for authentication
+router.beforeEach((to, from, next) => {
+  const isAuthenticated = localStorage.getItem("userToken"); // Check if token exists in localStorage
+
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
+    if (!isAuthenticated) {
+      next({ name: "signup", query: { redirect: to.fullPath } }); // Redirect to signup and include the original path
+    } else {
+      next();
+    }
+  } else {
+    next();
+  }
 });
 
 export default router;

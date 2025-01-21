@@ -1,64 +1,73 @@
 <template>
-  <div class="account-view">
-    <div class="form-container">
-      <h1>{{ isLogin ? "Login" : "Register" }}</h1>
-      <form @submit.prevent="handleSubmit">
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            v-model="form.email"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            v-model="form.password"
-            required
-          />
-        </div>
-        <button type="submit" class="btn">
-          {{ isLogin ? "Login" : "Register" }}
-        </button>
-        <p @click="toggleForm" class="toggle-link">
-          {{ isLogin ? "Don't have an account? Register" : "Already have an account? Login" }}
-        </p>
-      </form>
-    </div>
+  <div class="account-info">
+    <h2>Account Information</h2>
+    <p><strong>Email:</strong> {{ accountInfo.email }}</p>
+    <p><strong>First Name:</strong> {{ accountInfo.firstName }}</p>
+    <p><strong>Last Name:</strong> {{ accountInfo.lastName }}</p>
+
+    <button @click="signOut">Sign Out</button>
   </div>
 </template>
 
 <script>
 export default {
-  name: "AccountView",
+  name: "AccountInfo",
   data() {
     return {
-      isLogin: true, // Toggle between login and register
-      form: {
-        email: "",
-        password: "",
+      accountInfo: {
+        email: localStorage.getItem("email"),
+        firstName: localStorage.getItem("firstname"),
+        lastName: localStorage.getItem("lastname"),
+        username: localStorage.getItem("username"),
       },
     };
   },
   methods: {
-    toggleForm() {
-      this.isLogin = !this.isLogin;
-    },
-    handleSubmit() {
-      if (this.isLogin) {
-        // Handle login
-        console.log("Logging in with:", this.form);
-      } else {
-        // Handle registration
-        console.log("Registering with:", this.form);
+    async fetchAccountInfo() {
+      try {
+        const token = localStorage.getItem("userToken");
+        if (!token) {
+          alert("You are not logged in.");
+          return;
+        }
+        
+        // this.accountInfo = response.data;
+      } catch (error) {
+        console.error("Error fetching account info:", error);
+        alert("Failed to fetch account information. Please log in again.");
+        this.signOut();
       }
     },
+    signOut() {
+      localStorage.clear();
+      alert("You have been signed out.");
+      this.$router.push("/signup"); // Redirect to login page if using Vue Router
+    },
   },
-  
+  mounted() {
+    this.fetchAccountInfo();
+  },
 };
 </script>
 
+<style scoped>
+.account-info {
+  max-width: 400px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+</style>

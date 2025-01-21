@@ -13,6 +13,8 @@ dotenv.config();
 const app = express();
 const serverPort = 5500;
 
+const verificationPort = 5700;
+
 // MongoDB connection details
 const username = process.env.MONGO_USERNAME;
 const password = process.env.MONGO_PASSWORD;
@@ -40,7 +42,7 @@ const transporter = nodemailer.createTransport({
 
 // Helper function to send verification email
 async function sendVerificationEmail(email, token) {    
-  const verificationLink = `http://localhost:${serverPort}/api/verify-email?token=${token}`;
+  const verificationLink = `http://localhost:${verificationPort}/api/verify-email?token=${token}`;
   const mailOptions = {
     from: process.env.EMAIL_USERNAME,
     to: email,
@@ -53,9 +55,9 @@ async function sendVerificationEmail(email, token) {
 
 // Route: /api/register
 app.post('/api/register', async (req, res) => {
-  const { email, firstName, lastName, password } = req.body;
+  const { myUsername, email, firstName, lastName, password } = req.body;
 
-  if (!email || !firstName || !lastName || !password) {
+  if (!myUsername || !email || !firstName || !lastName || !password) {
     return res.status(400).json({ message: 'All fields are required.' });
   }
 
@@ -79,6 +81,7 @@ app.post('/api/register', async (req, res) => {
     // Create the user object
     const newUser = {
       email,
+      myUsername,
       firstName,
       lastName,
       password: hashedPassword,

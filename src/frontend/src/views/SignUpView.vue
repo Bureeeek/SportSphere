@@ -59,6 +59,13 @@
             <div class="form">
               <input
                 type="text"
+                placeholder="Username"
+                v-model="myUsername"
+                class="w100"
+                required
+              />
+              <input
+                type="text"
                 placeholder="First Name"
                 v-model="firstName"
                 class="w100"
@@ -145,6 +152,7 @@ export default {
       if (this.registerValid) {
         try {
           const response = await axios.post("http://localhost:5500/api/register", {
+            myUsername: this.myUsername.value,
             email: this.email.value,
             firstName: this.firstName,
             lastName: this.lastName,
@@ -161,12 +169,17 @@ export default {
     async handleSignIn() {
       if (this.loginValid) {
         try {
-          const response = await axios.post("http://localhost:5500/api/login", {
+          const response = await axios.post("http://localhost:5600/api/login", {
             email: this.email.value,
             password: this.password.value,
           });
           localStorage.setItem("userToken", response.data.token);
-          alert("Sign-in successful!");
+          localStorage.setItem("email", response.data.email);
+          localStorage.setItem("firstname", response.data.firstname);
+          localStorage.setItem("lastname", response.data.lastname);
+          localStorage.setItem("username", response.data.username)
+
+          this.$router.push('/')
         } catch (error) {
           console.error("Sign-in failed:", error);
           alert("Sign-in failed. Please check your credentials.");
