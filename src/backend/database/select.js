@@ -1,59 +1,54 @@
-// select.js
+import express from 'express';
+import { MongoClient } from 'mongodb';
+import 'dotenv/config';
+import cors from 'cors';
 
-import express from "express";
-import dotenv from "dotenv";
-import { MongoClient } from "mongodb";
-import { Article, Author, Media } from "./materials/article.js"; // Importiere das Artikel-Modell
-
-dotenv.config();
-
-// MongoDB-Verbindungsdetails
 const username = process.env.MONGO_USERNAME;
 const password = process.env.MONGO_PASSWORD;
 const host = process.env.MONGO_HOST;
 const port = process.env.MONGO_PORT;
 const dbName = process.env.MONGO_DB_NAME_ARTICLES;
+const collectionName = process.env.MONGO_COLLECTION_NAME_ARTICLES;
+
 const uri = `mongodb://${username}:${password}@${host}:${port}/?authSource=admin`;
 
 const app = express();
-const serverPort = 5001;
 
-// MongoDB client
-const client = new MongoClient(uri);
+// Enable CORS for all routes
+app.use(cors()); // Default: allows all origins
 
-// Route zum Abrufen von Artikeln
-app.get("/api/articles", async (req, res) => {
+// Route to fetch articles
+app.get('/api/articles', async (req, res) => {
+  let client;
+
   try {
-    await client.connect();
+    client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+    console.log('Connected to MongoDB');
+
     const db = client.db(dbName);
+    const articles = await db.collection(collectionName).find().toArray();
 
-    // Hole alle Artikel aus der Datenbank
-    const articles = await db.collection("news-articles").find().toArray();
-
-    // Gebe die Artikel-Daten als JSON zurück
+    console.log('Fetched Articles:', articles); // Log the fetched data
     res.json(
-      articles.map((article) => ({
+      articles.map(article => ({
         ...article,
-        media: Array.isArray(article.media) ? // Prüfe, ob 'media' ein Array ist
-          article.media.map((mediaId) => {
-            return {
-              type: "image", // Hier für Bilder, kann bei Bedarf erweitert werden
-              url: `http://localhost:5000/api/media/${mediaId}`, // Die URL für das Bild
-              caption: "Image Caption", // Beispiel-Untertitel
-            };
-          }) : [], // Falls 'media' nicht existiert, leere Liste verwenden
+        tags: article.tags || [], // Ensure tags is always an array
+        publicationDate: article.publicationDate || null, // Ensure publicationDate is always present
       }))
     );
+    
   } catch (err) {
-    console.error("Error:", err);
-    res.status(500).json({ error: "Failed to fetch articles" });
+    console.error('Error:', err);
+    res.status(500).json({ error: 'Failed to fetch articles' });
   } finally {
-    await client.close();
+    if (client) {
+      await client.close();
+    }
   }
 });
 
-
-// Server starten
-app.listen(serverPort, () => {
-  console.log(`Server running on http://localhost:${serverPort}`);
+// Start the server
+const PORT = 5001;
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
 });

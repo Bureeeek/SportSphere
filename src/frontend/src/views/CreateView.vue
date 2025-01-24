@@ -3,7 +3,7 @@
     <h1>Create article</h1>
     <form @submit.prevent="submitForm">
       <div class="form-group">
-        <label for="title">Title</label>
+        <label for="title">Summary</label>
         <input
           type="text"
           id="title"
@@ -40,23 +40,23 @@
           type="text"
           id="tags"
           v-model="news.tags"
-          placeholder="Enter tags"
+          placeholder=""
         />
       </div>
 
       <div class="form-group">
-        <label for="content">Content</label>
+        <label for="content">Inhalt</label>
         <textarea
           id="content"
           v-model="news.content"
-          placeholder="Enter the content"
+          placeholder="Inhalt eingeben"
           required
         ></textarea>
       </div>
 
       <div class="form-group">
         <label for="media">Media</label>
-        <input type="file" id="media" @change="handleMediaUpload" />
+        <input type="file" id="media" multiple @change="handleMediaUpload" />
       </div>
 
       <button type="submit">Create article</button>
@@ -77,53 +77,48 @@ export default {
         tags: '',
         content: '',
       },
-      mediaFile: null, // Storing the selected media file
+      mediaFiles: [],
     };
   },
   methods: {
-    async submitForm() {
-      try {
-        const formData = new FormData();
-        formData.append('title', this.news.title);
-        formData.append('summary', this.news.summary);
-        formData.append('category', this.news.category);
-        formData.append('tags', this.news.tags);
-        formData.append('content', this.news.content);
-        formData.append('publicationDate', new Date().toISOString());
+async submitForm() {
+  try {
+    const formData = new FormData();
+    formData.append('title', this.news.title);
+    formData.append('summary', this.news.summary);
+    formData.append('category', this.news.category);
+    formData.append('tags', this.news.tags);
+    formData.append('content', this.news.content);
+    formData.append('publicationDate', new Date().toISOString());
 
-        // Check if a file was selected
-        if (this.mediaFile) {
-          formData.append('media', this.mediaFile); // Append the file
-        }
+    // Füge jedes Bild zu FormData hinzu
+    this.mediaFiles.forEach((file) => {
+      formData.append('media', file);
+    });
 
-        const response = await axios.post(
-          'http://localhost:5000/api/create-article',
-          formData,
-          {
-            headers: { 'Content-Type': 'multipart/form-data' },
-          }
-        );
+    // Sende das Formular an den Server
+    const response = await axios.post('http://localhost:5000/api/create-article', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
 
-        alert('Article created successfully!');
-        console.log(response.data);
-      } catch (error) {
-        console.error('Error submitting form:', error);
-        alert('Failed to create article. Please try again.');
-      }
-    },
+    alert('Article created successfully!');
+    console.log(response.data);
+  } catch (error) {
+    console.error('Error submitting form:', error);
+    alert('Failed to create article. Please try again.');
+  }
+},
 
     handleMediaUpload(event) {
-      const file = event.target.files[0];
-      if (file && file.type.startsWith('image')) {
-        this.mediaFile = file;
-      } else {
-        alert('Please upload a valid image file.');
-        this.mediaFile = null;
-      }
+      const files = event.target.files;
+      this.mediaFiles = Array.from(files).map((file) => ({
+        type: file.type.startsWith('image') ? 'image' : 'video',
+        url: URL.createObjectURL(file),
+        caption: '',
+      }));
     },
   },
 };
 </script>
-
 
 <style scoped src="../css/CreateView.css"></style>
