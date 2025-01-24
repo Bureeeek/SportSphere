@@ -4,7 +4,11 @@
     <nav class="sidebar">
       <!-- Logo -->
       <div class="logo-container">
-        <img src="./assets/logo.png" alt="Logo" class="logo" />
+        <img
+          :src="theme === 'dark-mode' ? './assets/Logoss_inverted.png' : './assets/Logoss.png'"
+          alt="Logo"
+          class="logo"
+        />
       </div>
       <ul>
         <li><router-link to="/#">News</router-link></li>
