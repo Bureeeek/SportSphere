@@ -4,11 +4,7 @@
     <nav class="sidebar">
       <!-- Logo -->
       <div class="logo-container">
-        <img
-          :src="theme === 'dark-mode' ? './assets/Logoss_inverted.png' : './assets/Logoss.png'"
-          alt="Logo"
-          class="logo"
-        />
+        <img :src="logoSrc" alt="Logo" class="logo" />
       </div>
       <ul>
         <li><router-link to="/#">News</router-link></li>
@@ -40,6 +36,12 @@ export default {
 
     const theme = computed(() => (state.isDarkMode ? 'dark-mode' : 'light-mode'));
 
+    const logoSrc = computed(() =>
+  state.isDarkMode
+    ? require('@/assets/Logoss_inverted.png') // Logo für Dark Mode
+    : require('@/assets/Logoss.png') // Logo für Light Mode
+);
+
     const toggleTheme = () => {
       state.isDarkMode = !state.isDarkMode;
     };
@@ -50,6 +52,7 @@ export default {
     return {
       theme,
       toggleTheme,
+      logoSrc,
     };
   },
 };
@@ -84,11 +87,13 @@ body {
   height: 100vh;
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
   transition: all 0.3s ease;
+  
 }
 
 .logo-container {
   text-align: center;
-  margin-bottom: 20px;
+  
+  margin-right:150px;
 }
 
 .logo {
@@ -103,6 +108,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  margin-bottom: 200px; 
 }
 
 .sidebar li {
@@ -230,6 +236,8 @@ body {
   .toggle-btn {
     font-size: 14px;
     padding: 10px;
+
   }
 }
 </style>
+
