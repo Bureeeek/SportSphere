@@ -2,6 +2,10 @@
   <div :class="['app-container', theme]">
     <!-- Sidebar -->
     <nav class="sidebar">
+      <!-- Logo -->
+      <div class="logo-container">
+        <img src="./assets/logo.png" alt="Logo" class="logo" />
+      </div>
       <ul>
         <li><router-link to="/#">News</router-link></li>
         <li><router-link to="/create">Create</router-link></li>
@@ -76,6 +80,17 @@ body {
   height: 100vh;
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
   transition: all 0.3s ease;
+}
+
+.logo-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.logo {
+  max-width: 100%;
+  max-height: 80px;
+  object-fit: contain;
 }
 
 .sidebar ul {
