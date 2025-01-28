@@ -3,24 +3,13 @@
     <h1>Create article</h1>
     <form @submit.prevent="submitForm">
       <div class="form-group">
-        <label for="title">Summary</label>
-        <input
-          type="text"
-          id="title"
-          v-model="news.title"
-          placeholder="Enter your title"
-          required
-        />
+        <label for="title">Title</label>
+        <input type="text" id="title" v-model="news.title" required />
       </div>
 
       <div class="form-group">
         <label for="summary">Summary</label>
-        <textarea
-          id="summary"
-          v-model="news.summary"
-          placeholder="This will be displayed on the news page"
-          required
-        ></textarea>
+        <textarea id="summary" v-model="news.summary" required></textarea>
       </div>
 
       <div class="form-group">
@@ -36,27 +25,17 @@
 
       <div class="form-group">
         <label for="tags">Tags</label>
-        <input
-          type="text"
-          id="tags"
-          v-model="news.tags"
-          placeholder=""
-        />
+        <input type="text" id="tags" v-model="news.tags" />
       </div>
 
       <div class="form-group">
-        <label for="content">Inhalt</label>
-        <textarea
-          id="content"
-          v-model="news.content"
-          placeholder="Inhalt eingeben"
-          required
-        ></textarea>
+        <label for="content">Content</label>
+        <textarea id="content" v-model="news.content" required></textarea>
       </div>
 
       <div class="form-group">
-        <label for="media">Media</label>
-        <input type="file" id="media" multiple @change="handleMediaUpload" />
+        <label for="media">Upload Image</label>
+        <input type="file" id="media" @change="handleMediaUpload" accept="image/*" />
       </div>
 
       <button type="submit">Create article</button>
@@ -77,45 +56,40 @@ export default {
         tags: '',
         content: '',
       },
-      mediaFiles: [],
+      mediaFile: null, // Nur ein Bild
     };
   },
   methods: {
-async submitForm() {
-  try {
-    const formData = new FormData();
-    formData.append('title', this.news.title);
-    formData.append('summary', this.news.summary);
-    formData.append('category', this.news.category);
-    formData.append('tags', this.news.tags);
-    formData.append('content', this.news.content);
-    formData.append('publicationDate', new Date().toISOString());
+    async submitForm() {
+      try {
+        const formData = new FormData();
+        formData.append('title', this.news.title);
+        formData.append('summary', this.news.summary);
+        formData.append('category', this.news.category);
+        formData.append('tags', this.news.tags);
+        formData.append('content', this.news.content);
+        formData.append('publicationDate', new Date().toISOString());
 
-    // Füge jedes Bild zu FormData hinzu
-    this.mediaFiles.forEach((file) => {
-      formData.append('media', file);
-    });
+        // **Bild hinzufügen**
+        if (this.mediaFile) {
+          formData.append('media', this.mediaFile);
+        }
 
-    // Sende das Formular an den Server
-    const response = await axios.post('http://localhost:5000/api/create-article', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    });
+        // **Sende die Anfrage an das Backend**
+        const response = await axios.post('http://localhost:5000/api/create-article', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
 
-    alert('Article created successfully!');
-    console.log(response.data);
-  } catch (error) {
-    console.error('Error submitting form:', error);
-    alert('Failed to create article. Please try again.');
-  }
-},
+        alert('Article created successfully!');
+        console.log(response.data);
+      } catch (error) {
+        console.error('Error submitting form:', error);
+        alert('Failed to create article. Please try again.');
+      }
+    },
 
     handleMediaUpload(event) {
-      const files = event.target.files;
-      this.mediaFiles = Array.from(files).map((file) => ({
-        type: file.type.startsWith('image') ? 'image' : 'video',
-        url: URL.createObjectURL(file),
-        caption: '',
-      }));
+      this.mediaFile = event.target.files[0];
     },
   },
 };
