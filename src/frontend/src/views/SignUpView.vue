@@ -112,6 +112,7 @@ export default {
   data() {
     return {
       emailRegex: /^[\w.-]+@[\w.-]+\.\w+$/,
+      myUsername: "",
       firstName: "",
       lastName: "",
       email: { value: "", error: false },
@@ -133,6 +134,7 @@ export default {
       return (
         this.firstName.length > 0 &&
         this.lastName.length > 0 &&
+        this.myUsername.length > 0 &&
         this.emailValid &&
         this.passwordValid
       );
@@ -152,7 +154,7 @@ export default {
       if (this.registerValid) {
         try {
           const response = await axios.post("http://localhost:5500/api/register", {
-            myUsername: this.myUsername.value,
+            myUsername: this.myUsername,
             email: this.email.value,
             firstName: this.firstName,
             lastName: this.lastName,
