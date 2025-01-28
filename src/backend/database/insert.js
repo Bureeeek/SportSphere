@@ -5,11 +5,11 @@ import dotenv from "dotenv";
 import { MongoClient } from "mongodb";
 import multer from "multer";
 import path from "path";
+import { fileURLToPath } from "url";
 
 // Load environment variables
 dotenv.config();
 
-// MongoDB connection details
 const username = process.env.MONGO_USERNAME;
 const password = process.env.MONGO_PASSWORD;
 const host = process.env.MONGO_HOST;
@@ -24,44 +24,53 @@ const serverPort = 5000;
 app.use(cors());
 app.use(bodyParser.json());
 
-// Setup multer for image uploads
+// __dirname für ES-Module simulieren
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// **Multer-Konfiguration für Datei-Upload**
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/");
+    cb(null, path.join(__dirname, "uploads")); // Speichert die Bilder in "backend/database/uploads/"
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); // Creates a unique filename
+    cb(null, Date.now() + "-" + file.originalname);
   },
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage });
 
-// MongoDB client
-const client = new MongoClient(uri);
+// **Fix: Statische Route, um Bilder auszuliefern**
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// Route to insert a news article with image upload
-app.post("/api/create-article", upload.array("media"), async (req, res) => {
+// **Fix: API zum Hochladen von Bildern und Speichern in MongoDB**
+app.post("/api/create-article", upload.single("media"), async (req, res) => {
   try {
     await client.connect();
     const db = client.db(dbName);
     const collection = db.collection("news-articles");
 
-    // Prepare data with image URLs
+    // **Bild-URL generieren**
+    const imageUrl = req.file
+      ? `http://localhost:5000/uploads/${req.file.filename}`
+      : null;
+
     const articleData = {
-      ...req.body,
-      media: req.files.map(
-        (file) => `http://localhost:5000/uploads/${file.filename}`
-      ), // Store the image URLs
+      title: req.body.title,
+      summary: req.body.summary,
+      category: req.body.category,
+      tags: req.body.tags ? req.body.tags.split(",") : [],
+      content: req.body.content,
+      publicationDate: new Date(),
+      imageUrl: imageUrl, // **Speichert die Bild-URL in der Datenbank**
     };
 
-    // Insert data
     const result = await collection.insertOne(articleData);
-    res
-      .status(201)
-      .json({
-        message: "Article created successfully!",
-        id: result.insertedId,
-      });
+    res.status(201).json({
+      message: "Article created successfully!",
+      id: result.insertedId,
+      imageUrl: imageUrl, // **Gibt die URL zurück**
+    });
   } catch (err) {
     console.error("Error:", err);
     res.status(500).json({ message: "Error creating article", error: err });
@@ -70,10 +79,7 @@ app.post("/api/create-article", upload.array("media"), async (req, res) => {
   }
 });
 
-// Serve static files (images)
-app.use("/uploads", express.static("uploads"));
-
-// Start server
+// Server starten
 app.listen(serverPort, () => {
-  console.log(`Server running on http://localhost:${serverPort}`);
+  console.log(`✅ Server läuft auf http://localhost:${serverPort}`);
 });

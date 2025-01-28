@@ -1,54 +1,36 @@
-import express from 'express';
-import { MongoClient } from 'mongodb';
-import 'dotenv/config';
-import cors from 'cors';
-
-const username = process.env.MONGO_USERNAME;
-const password = process.env.MONGO_PASSWORD;
-const host = process.env.MONGO_HOST;
-const port = process.env.MONGO_PORT;
-const dbName = process.env.MONGO_DB_NAME_ARTICLES;
-const collectionName = process.env.MONGO_COLLECTION_NAME_ARTICLES;
-
-const uri = `mongodb://${username}:${password}@${host}:${port}/?authSource=admin`;
+import { MongoClient } from "mongodb";
+import express from "express";
+import cors from "cors";
 
 const app = express();
+app.use(cors());
 
-// Enable CORS for all routes
-app.use(cors()); // Default: allows all origins
+const uri = "mongodb://localhost:27017";
+const client = new MongoClient(uri);
+const dbName = "sportsphere";
+const collectionName = "news-articles";
 
-// Route to fetch articles
-app.get('/api/articles', async (req, res) => {
-  let client;
-
+app.get("/api/articles", async (req, res) => {
   try {
-    client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-    console.log('Connected to MongoDB');
-
+    await client.connect();
     const db = client.db(dbName);
     const articles = await db.collection(collectionName).find().toArray();
 
-    console.log('Fetched Articles:', articles); // Log the fetched data
     res.json(
-      articles.map(article => ({
+      articles.map((article) => ({
         ...article,
-        tags: article.tags || [], // Ensure tags is always an array
-        publicationDate: article.publicationDate || null, // Ensure publicationDate is always present
+        imageUrl: article.imageUrl || null, // Falls kein Bild existiert, bleibt es NULL
       }))
     );
-    
-  } catch (err) {
-    console.error('Error:', err);
-    res.status(500).json({ error: 'Failed to fetch articles' });
+  } catch (error) {
+    console.error("Fehler beim Abrufen der Artikel:", error);
+    res.status(500).json({ error: "Fehler beim Abrufen der Artikel" });
   } finally {
-    if (client) {
-      await client.close();
-    }
+    await client.close();
   }
 });
 
-// Start the server
 const PORT = 5001;
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`✅ API läuft auf http://localhost:${PORT}`);
 });

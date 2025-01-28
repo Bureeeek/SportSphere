@@ -2,44 +2,42 @@
   <div class="news-page">
     <h1>News Articles</h1>
 
-    <!-- Ladeanzeige -->
     <div v-if="loading" class="loading">Loading articles...</div>
-    
-    <!-- Fehleranzeige -->
+
     <div v-else-if="error" class="error">
       Error: {{ error }} 
       <button @click="fetchArticles()">Reload</button>
     </div>
 
-    <!-- Hauptartikel und andere Artikel -->
     <div v-else>
       <div v-if="articles.length > 0" class="main-article">
         <div class="article-image-container">
-          <img :src="articles[0].imageUrl" alt="Main Article image" class="main-article-image" />
+          <img v-if="articles[0].media && articles[0].media.length > 0" 
+               :src="articles[0].media[0]" 
+               alt="Main Article image" 
+               class="main-article-image" />
         </div>
         <div class="article-content">
           <h2>{{ articles[0].title }}</h2>
           <p><strong>Summary:</strong> {{ articles[0].summary }}</p>
           <p><strong>Category:</strong> {{ articles[0].category }}</p>
-          <p><strong>Tags:</strong> {{ articles[0].tags.join(', ') }}</p>
-          <p><strong>Publication Date:</strong> {{ new Date(articles[0].publicationDate).toLocaleDateString() }}</p>
+          <p><strong>Publication Date:</strong> {{ formatDate(articles[0].publicationDate) }}</p>
         </div>
       </div>
 
       <div class="secondary-articles">
-        <div 
-          v-for="(article) in articles.slice(1)" 
-          :key="article._id" 
-          class="secondary-article" 
-        >
+        <div v-for="(article) in articles.slice(1)" :key="article._id" class="secondary-article">
           <div class="article-image-container">
-            <img :src="article.imageUrl" alt="Article image" class="secondary-article-image" />
+            <img v-if="article.media && article.media.length > 0" 
+                 :src="article.media[0]" 
+                 alt="Article image" 
+                 class="secondary-article-image" />
           </div>
           <div class="article-content">
             <h3>{{ article.title }}</h3>
             <p><strong>Summary:</strong> {{ article.summary }}</p>
             <p><strong>Category:</strong> {{ article.category }}</p>
-            <p><strong>Publication Date:</strong> {{ new Date(article.publicationDate).toLocaleDateString() }}</p>
+            <p><strong>Publication Date:</strong> {{ formatDate(article.publicationDate) }}</p>
           </div>
         </div>
       </div>
@@ -51,33 +49,39 @@
 import axios from 'axios';
 
 export default {
-  name: 'HomeView',
+  name: 'NewsView',
   data() {
     return {
-      articles: [], // Liste der Artikel
-      loading: true, // Ladeanzeige
-      error: null, // Fehlernachricht
+      articles: [],
+      loading: true,
+      error: null,
     };
   },
   created() {
-    this.fetchArticles(); // Artikel abrufen, sobald die Komponente erstellt wird
+    this.fetchArticles();
   },
   methods: {
     async fetchArticles() {
-      this.loading = true; // Ladeanzeige aktivieren
+      this.loading = true;
       try {
-        const response = await axios.get('http://localhost:5001/api/articles'); // Artikel abrufen
-        this.articles = response.data; // Daten speichern
+        const response = await axios.get('http://localhost:5001/api/articles');
+        this.articles = response.data;
       } catch (err) {
-        this.error = 'Failed to load articles. Please try again later.'; // Fehlernachricht speichern
+        this.error = 'Failed to load articles. Please try again later.';
         console.error(err);
       } finally {
-        this.loading = false; // Ladeanzeige deaktivieren
+        this.loading = false;
       }
     },
+    formatDate(dateString) {
+      return dateString ? new Date(dateString).toLocaleDateString() : "Unknown date";
+    }
   },
 };
 </script>
+
+
+
 
 <style scoped>
 .news-page {
@@ -85,7 +89,11 @@ export default {
   flex-direction: column;
   gap: 20px;
   padding: 20px;
+
+  
+
   color: #fff; /* Weißer Text */
+
 }
 
 /* Lade- und Fehleranzeige */
