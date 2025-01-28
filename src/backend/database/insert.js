@@ -1,18 +1,15 @@
-// insert.js
-
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import dotenv from "dotenv";
-import { MongoClient, GridFSBucket } from "mongodb";
+import { MongoClient } from "mongodb";
 import multer from "multer";
-import { Readable } from "stream";
 import path from "path";
-import { Article, Author, Media } from "./materials/article.js"; // Importiere die Modelle
 
+// Load environment variables
 dotenv.config();
 
-// MongoDB-Verbindungsdetails
+// MongoDB connection details
 const username = process.env.MONGO_USERNAME;
 const password = process.env.MONGO_PASSWORD;
 const host = process.env.MONGO_HOST;
@@ -27,65 +24,44 @@ const serverPort = 5000;
 app.use(cors());
 app.use(bodyParser.json());
 
+// Setup multer for image uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname)); // Creates a unique filename
+  },
+});
+
+const upload = multer({ storage: storage });
+
 // MongoDB client
 const client = new MongoClient(uri);
 
-// Route zum Erstellen eines Artikels mit Bild-Upload
-app.post("/api/create-article", multer().array("media"), async (req, res) => {
+// Route to insert a news article with image upload
+app.post("/api/create-article", upload.array("media"), async (req, res) => {
   try {
     await client.connect();
     const db = client.db(dbName);
-    const bucket = new GridFSBucket(db, { bucketName: "images" });
+    const collection = db.collection("news-articles");
 
-    // Erstelle den Artikel ohne die Medien-URLs
-    const articleData = new Article(
-      req.body.title,
-      new Author(
-        req.body.authorUsername,
-        req.body.authorFirstName,
-        req.body.authorLastName,
-        req.body.authorVerified,
-        req.body.authorEmail
-      ),
-      req.body.publicationDate,
-      req.body.lastUpdated,
-      req.body.category,
-      req.body.tags,
-      req.body.summary,
-      { body: req.body.contentBody, media: [] },
-      req.body.commentsEnabled,
-      req.body.readTime
-    );
+    // Prepare data with image URLs
+    const articleData = {
+      ...req.body,
+      media: req.files.map(
+        (file) => `http://localhost:5000/uploads/${file.filename}`
+      ), // Store the image URLs
+    };
 
-    // Füge den Artikel in die DB ein
-    const result = await db.collection("news-articles").insertOne(articleData);
-
-    // Bilder in GridFS hochladen und ihre IDs speichern
-    for (let file of req.files) {
-      const stream = Readable.from(file.buffer);
-      const uploadStream = bucket.openUploadStream(file.originalname, {
-        contentType: file.mimetype,
+    // Insert data
+    const result = await collection.insertOne(articleData);
+    res
+      .status(201)
+      .json({
+        message: "Article created successfully!",
+        id: result.insertedId,
       });
-
-      // Datei in GridFS speichern
-      stream.pipe(uploadStream);
-
-      // Füge die ID des Bildes zum Artikel hinzu
-      articleData.media.push(uploadStream.id);
-    }
-
-    // Artikel-Dokument mit den Bild-IDs aktualisieren
-    await db
-      .collection("news-articles")
-      .updateOne(
-        { _id: result.insertedId },
-        { $set: { media: articleData.media } }
-      );
-
-    res.status(201).json({
-      message: "Article created successfully!",
-      id: result.insertedId,
-    });
   } catch (err) {
     console.error("Error:", err);
     res.status(500).json({ message: "Error creating article", error: err });
@@ -94,7 +70,10 @@ app.post("/api/create-article", multer().array("media"), async (req, res) => {
   }
 });
 
-// Server starten
+// Serve static files (images)
+app.use("/uploads", express.static("uploads"));
+
+// Start server
 app.listen(serverPort, () => {
   console.log(`Server running on http://localhost:${serverPort}`);
 });

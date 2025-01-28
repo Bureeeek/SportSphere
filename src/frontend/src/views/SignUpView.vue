@@ -7,7 +7,7 @@
           <div class="top">
             <img
               class="logo"
-              src="https://res.cloudinary.com/dc3c8nrut/image/upload/v1685298768/logo-placeholder_l3yodl.png"
+              src="../assets/SportsSphereLogoBasketball.png"
               alt="Logo"
             />
             <div class="title">Sign in</div>
@@ -46,7 +46,7 @@
           <div class="top">
             <img
               class="logo"
-              src="https://res.cloudinary.com/dc3c8nrut/image/upload/v1685298768/logo-placeholder_l3yodl.png"
+              src="../assets/SportsSphereLogoBasketball.png"
               alt="Logo"
             />
             <div class="title">Create an Account</div>
@@ -112,6 +112,7 @@ export default {
   data() {
     return {
       emailRegex: /^[\w.-]+@[\w.-]+\.\w+$/,
+      myUsername: "",
       firstName: "",
       lastName: "",
       email: { value: "", error: false },
@@ -133,6 +134,7 @@ export default {
       return (
         this.firstName.length > 0 &&
         this.lastName.length > 0 &&
+        this.myUsername.length > 0 &&
         this.emailValid &&
         this.passwordValid
       );
@@ -152,7 +154,7 @@ export default {
       if (this.registerValid) {
         try {
           const response = await axios.post("http://localhost:5500/api/register", {
-            myUsername: this.myUsername.value,
+            myUsername: this.myUsername,
             email: this.email.value,
             firstName: this.firstName,
             lastName: this.lastName,
@@ -203,9 +205,7 @@ html, body {
 #app {
   width: 100%;
   padding: 75px;
-  background: #2a2a3d;
   border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
 }
 
@@ -265,13 +265,11 @@ button:disabled {
   font-size: 1.5rem;
   margin-bottom: 10px;
   font-weight: bold;
-  color: white;
 }
 
 .subtitle {
   font-size: 0.9rem;
   margin-bottom: 20px;
-  color: white;
 }
 
 .subtitle-action {
