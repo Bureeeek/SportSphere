@@ -91,7 +91,7 @@ export default {
   flex-direction: column;
   gap: 20px;
   padding: 20px;
-  color: #fff;
+  color: var(--text-color);
 }
 
 .loading, .error {

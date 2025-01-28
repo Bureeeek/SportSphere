@@ -149,6 +149,7 @@ body {
 /* Dark Mode */
 .dark-mode {
   --background-color: #0d1117;
+  --text-color: #ffffff;
   --sidebar-bg: #161b22;
   --sidebar-text: #ffffff;
   --link-color: #c9d1d9;
@@ -161,6 +162,7 @@ body {
 /* Light Mode */
 .light-mode {
   --background-color: #f4f4f9;
+  --text-color: #000000; /* Ändern zu Schwarz */
   --sidebar-bg: #ffffff;
   --sidebar-text: #333333;
   --link-color: #0056b3;
@@ -170,13 +172,15 @@ body {
   --button-hover-bg: #9ca3af;
 }
 
+
+
 /* Main Content */
 .main-content {
   flex-grow: 1;
   padding: 20px;
   overflow-y: auto;
   background-color: var(--background-color);
-  color: var(--sidebar-text);
+  color: var(--text-color);
   transition: all 0.3s ease;
 }
 
