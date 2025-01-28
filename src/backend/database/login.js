@@ -69,7 +69,7 @@ app.post('/api/login', async (req, res) => {
       email: user.email,
       firstname: user.firstName,
       lastname: user.lastName,
-      username: user.username
+      username: user.myUsername
     });
   } catch (err) {
     console.error('Error during login:', err);

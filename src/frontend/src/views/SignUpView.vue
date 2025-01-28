@@ -179,7 +179,7 @@ export default {
           localStorage.setItem("email", response.data.email);
           localStorage.setItem("firstname", response.data.firstname);
           localStorage.setItem("lastname", response.data.lastname);
-          localStorage.setItem("username", response.data.username)
+          localStorage.setItem("username", response.data.username);
 
           this.$router.push('/')
         } catch (error) {
