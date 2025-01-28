@@ -10,7 +10,12 @@
         <li><router-link to="/#">News</router-link></li>
         <li><router-link to="/create">Create</router-link></li>
         <li><router-link to="/about">About</router-link></li>
-        <li><router-link to="/account">Account</router-link></li>
+        <li>
+          <router-link to="/account">
+            <AccountIcon class="icon" />
+            Account
+          </router-link>
+        </li>
       </ul>
       <button @click="toggleTheme" class="toggle-btn">
         {{ theme === 'dark-mode' ? 'Switch to Light Mode' : 'Switch to Dark Mode' }}
@@ -25,29 +30,35 @@
 </template>
 
 <script>
-import { provide, reactive, computed } from 'vue';
+import { provide, reactive, computed } from "vue";
+import AccountIcon from "vue-material-design-icons/Account.vue";
 
 export default {
-  name: 'App',
+  name: "App",
+  components: {
+    AccountIcon,
+  },
   setup() {
     const state = reactive({
       isDarkMode: true,
     });
 
-    const theme = computed(() => (state.isDarkMode ? 'dark-mode' : 'light-mode'));
+    const theme = computed(() =>
+      state.isDarkMode ? "dark-mode" : "light-mode"
+    );
 
     const logoSrc = computed(() =>
-  state.isDarkMode
-    ? require('@/assets/Logoss_inverted.png') // Logo für Dark Mode
-    : require('@/assets/Logoss.png') // Logo für Light Mode
-);
+      state.isDarkMode
+        ? require("@/assets/Logoss_inverted.png") // Logo für Dark Mode
+        : require("@/assets/Logoss.png") // Logo für Light Mode
+    );
 
     const toggleTheme = () => {
       state.isDarkMode = !state.isDarkMode;
     };
 
-    provide('theme', theme);
-    provide('toggleTheme', toggleTheme);
+    provide("theme", theme);
+    provide("toggleTheme", toggleTheme);
 
     return {
       theme,
@@ -62,7 +73,7 @@ export default {
 /* Shared Styles */
 body {
   margin: 0;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   background-color: var(--background-color);
 }
 
@@ -87,13 +98,11 @@ body {
   height: 100vh;
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
   transition: all 0.3s ease;
-  
 }
 
 .logo-container {
   text-align: center;
-  
-  margin-right:150px;
+  margin-right: 150px;
 }
 
 .logo {
@@ -108,7 +117,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  margin-bottom: 200px; 
+  margin-bottom: 200px;
 }
 
 .sidebar li {
@@ -120,7 +129,9 @@ body {
   padding: 12px 20px;
   border-radius: 8px;
   text-decoration: none;
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Abstand zwischen Icon und Text */
   font-weight: 500;
   transition: background-color 0.3s ease;
 }
@@ -128,6 +139,12 @@ body {
 .sidebar li a:hover {
   background-color: var(--link-hover-bg);
   color: var(--link-hover-color);
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+  fill: var(--link-color);
 }
 
 .toggle-btn {
@@ -149,6 +166,7 @@ body {
 /* Dark Mode */
 .dark-mode {
   --background-color: #0d1117;
+  --text-color: #ffffff;
   --sidebar-bg: #161b22;
   --sidebar-text: #ffffff;
   --link-color: #c9d1d9;
@@ -161,6 +179,7 @@ body {
 /* Light Mode */
 .light-mode {
   --background-color: #f4f4f9;
+  --text-color: #000000; /* Ändern zu Schwarz */
   --sidebar-bg: #ffffff;
   --sidebar-text: #333333;
   --link-color: #0056b3;
@@ -176,7 +195,7 @@ body {
   padding: 20px;
   overflow-y: auto;
   background-color: var(--background-color);
-  color: var(--sidebar-text);
+  color: var(--text-color);
   transition: all 0.3s ease;
 }
 
@@ -236,8 +255,6 @@ body {
   .toggle-btn {
     font-size: 14px;
     padding: 10px;
-
   }
 }
 </style>
-

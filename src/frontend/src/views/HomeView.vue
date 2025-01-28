@@ -89,7 +89,11 @@ export default {
   flex-direction: column;
   gap: 20px;
   padding: 20px;
+
+  
+
   color: #fff; /* Weißer Text */
+
 }
 
 /* Lade- und Fehleranzeige */
