@@ -86,7 +86,7 @@ export default {
   gap: 20px;
   padding: 20px;
 <<<<<<< HEAD
-  color: var(--text-color);
+  
 =======
   color: #fff; /* Weißer Text */
 >>>>>>> 8fe6cd4ad790dba6c84e8a216b9de6b37ef1cfca
