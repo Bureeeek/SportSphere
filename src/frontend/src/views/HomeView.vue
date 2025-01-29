@@ -64,7 +64,7 @@ export default {
     async fetchArticles() {
       this.loading = true;
       try {
-        const response = await axios.get('http://localhost:5001/api/articles');
+        const response = await axios.get('http://10.110.48.248:5001/api/articles');
         this.articles = response.data;
       } catch (err) {
         this.error = 'Failed to load articles. Please try again later.';

@@ -76,7 +76,7 @@ export default {
         }
 
         // **Sende die Anfrage an das Backend**
-        const response = await axios.post('http://localhost:5000/api/create-article', formData, {
+        const response = await axios.post('http://10.110.48.248:5000/api/create-article', formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
 

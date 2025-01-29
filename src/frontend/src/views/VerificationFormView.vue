@@ -23,7 +23,7 @@
           type="text" 
           :id="platform + '-handle'" 
           v-model="handles[platform]" 
-          placeholder="Enter your handle for {{ platform }}" 
+          placeholder="Enter your handle"
           required
         />
       </div>
@@ -49,7 +49,7 @@
       </div>
 
       <div class="form-group">
-        <div id="recaptcha-container"></div>
+        <div id="hcaptcha-container"></div>
       </div>
 
       <button type="submit" :disabled="!captchaVerified">Submit</button>
@@ -58,6 +58,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "VerificationForm",
   data() {
@@ -75,8 +77,8 @@ export default {
       },
       reason: "",
       articles: "",
-      captchaVerified: false, // reCAPTCHA status
-      recaptchaWidgetId: null, // reCAPTCHA widget ID
+      captchaVerified: false, 
+      captchaResponse: null, 
     };
   },
   computed: {
@@ -85,99 +87,58 @@ export default {
     },
   },
   mounted() {
-    // Load reCAPTCHA script dynamically
     const script = document.createElement("script");
-    script.src = "https://www.google.com/recaptcha/enterprise.js?render=6LcIV8UqAAAAACJnTgVx2U7xBNdv7mirBCAtLbTW";
+    script.src = "https://js.hcaptcha.com/1/api.js";
     script.async = true;
     script.defer = true;
-    script.onload = this.renderRecaptcha; // Render the reCAPTCHA once the script loads
+    script.onload = this.renderHCaptcha;
     document.head.appendChild(script);
   },
   methods: {
-    renderRecaptcha() {
-      if (window.grecaptcha) {
-        // This will render the reCAPTCHA widget
-        window.grecaptcha.enterprise.ready(() => {
-          try {
-            this.recaptchaWidgetId = window.grecaptcha.enterprise.render('recaptcha-container', {
-              sitekey: '6LcIV8UqAAAAACJnTgVx2U7xBNdv7mirBCAtLbTW',
-              callback: this.onCaptchaVerified,
-            });
-            console.log('reCAPTCHA rendered');
-          } catch (error) {
-            console.error('Error rendering reCAPTCHA:', error);
-          }
+    renderHCaptcha() {
+      if (window.hcaptcha) {
+        window.hcaptcha.render("hcaptcha-container", {
+          sitekey: process.env.VUE_APP_HCAPTCHA_SITE_KEY,
+          callback: this.onCaptchaVerified,
+          "expired-callback": this.onCaptchaExpired,
         });
       }
     },
     onCaptchaVerified(response) {
-      console.log("reCAPTCHA Verified:", response);
-      if (response) {
-        this.captchaVerified = true;
-      } else {
-        console.error("reCAPTCHA verification failed");
-        this.captchaVerified = false;
-      }
+      this.captchaVerified = true;
+      this.captchaResponse = response;
     },
-    resetCaptcha() {
-      if (window.grecaptcha && this.recaptchaWidgetId !== null) {
-        window.grecaptcha.reset(this.recaptchaWidgetId); // Reset the reCAPTCHA
-        this.captchaVerified = false;
-      }
+    onCaptchaExpired() {
+      this.captchaVerified = false;
+      this.captchaResponse = null;
     },
-
     async submitForm() {
-      if (this.captchaVerified) {
-        try {
-          // Execute reCAPTCHA to get a fresh token
-          const token = await window.grecaptcha.enterprise.execute('6LcIV8UqAAAAACJnTgVx2U7xBNdv7mirBCAtLbTW', { action: 'submitForm' });
-          console.log("reCAPTCHA Token:", token);
-
-          // Prepare data to send to backend
-          const verificationData = {
-            selectedPlatforms: this.selectedPlatforms,
-            handles: this.handles,
-            reason: this.reason,
-            articles: this.articles,
-            captchaToken: token,
-          };
-
-          // Send the data to your backend API
-          await this.sendVerificationDataToBackend(verificationData);
-          alert("Your verification request has been submitted!");
-        } catch (error) {
-          console.error("Error executing reCAPTCHA:", error);
-          alert("reCAPTCHA error, please try again.");
-        }
-      } else {
+      if (!this.captchaVerified) {
         alert("Please complete the CAPTCHA.");
+        return;
+      }
+
+      const verificationData = {
+        selectedPlatforms: this.selectedPlatforms,
+        handles: this.handles,
+        reason: this.reason,
+        articles: this.articles,
+        captchaResponse: this.captchaResponse,
+      };
+
+      try {
+        await axios.post("http://10.110.48.248:5800/api/verify-user", verificationData);
+        alert("Your verification request has been submitted!");
+      } catch (error) {
+        console.error("Error submitting verification request:", error);
+        alert("Error submitting request.");
       }
     },
-
-// Method to send the verification data to your backend
-async sendVerificationDataToBackend(verificationData) {
-  try {
-    const response = await fetch('/api/verify-captcha', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(verificationData),
-    });
-    const data = await response.json();
-    if (data.success) {
-      console.log("Backend verification successful:", data);
-    } else {
-      console.log("Backend verification failed:", data);
-    }
-  } catch (error) {
-    console.error("Error sending verification data to backend:", error);
-  }
-}
-
   },
 };
 </script>
+
+
 
 <style scoped>
 .verification-form {
