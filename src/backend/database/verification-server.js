@@ -36,6 +36,11 @@ app.post("/api/verify-user", async (req, res) => {
   const { selectedPlatforms, handles, reason, articles } = req.body;
 
   try {
+    await client.connect();
+
+    const db = client.db(dbName);
+    const verificationCollection = db.collection(collectionName);
+
     const verification = new Verification({
       selectedPlatforms,
       handles,
@@ -43,20 +48,29 @@ app.post("/api/verify-user", async (req, res) => {
       articles,
     });
 
-    await verification.save();
+    await verificationCollection.insertOne(verification);
     res.status(201).json({ message: "Verification request submitted" });
   } catch (error) {
     res.status(500).json({ message: "Error saving verification request" });
+  } finally {
+    await client.close();
   }
 });
 
 // Get all verification requests
 app.get("/api/verify-user", async (req, res) => {
   try {
-    const requests = await Verification.find();
+    await client.connect();
+
+    const db = client.db(dbName);
+    const verificationCollection = db.collection(collectionName);
+
+    const requests = await db.collection(verificationCollection).find().toArray();
     res.json(requests);
   } catch (error) {
     res.status(500).json({ message: "Error fetching data" });
+  } finally {
+    await client.close();
   }
 });
 
