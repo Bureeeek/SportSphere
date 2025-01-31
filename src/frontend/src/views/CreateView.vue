@@ -44,47 +44,48 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from "axios";
 
 export default {
   data() {
     return {
       news: {
-        title: '',
-        summary: '',
-        category: '',
-        tags: '',
-        content: '',
+        title: "",
+        summary: "",
+        category: "",
+        tags: "",
+        content: "",
       },
-      mediaFile: null, // Nur ein Bild
+      mediaFile: null, // Bild speichern
     };
   },
   methods: {
     async submitForm() {
       try {
         const formData = new FormData();
-        formData.append('title', this.news.title);
-        formData.append('summary', this.news.summary);
-        formData.append('category', this.news.category);
-        formData.append('tags', this.news.tags);
-        formData.append('content', this.news.content);
-        formData.append('publicationDate', new Date().toISOString());
+        formData.append("title", this.news.title);
+        formData.append("summary", this.news.summary);
+        formData.append("category", this.news.category);
+        formData.append("tags", this.news.tags);
+        formData.append("content", this.news.content);
+        formData.append("publicationDate", new Date().toISOString());
 
-        // **Bild hinzufügen**
         if (this.mediaFile) {
-          formData.append('media', this.mediaFile);
+          formData.append("media", this.mediaFile);
+          console.log("Hochzuladende Datei:", this.mediaFile);
         }
 
-        // **Sende die Anfrage an das Backend**
-        const response = await axios.post('http://10.110.48.248:5000/api/create-article', formData, {
-          headers: { 'Content-Type': 'multipart/form-data' }
-        });
+        const response = await axios.post(
+          "http://localhost:5000/api/create-article",
+          formData,
+          { headers: { "Content-Type": "multipart/form-data" } }
+        );
 
-        alert('Article created successfully!');
+        alert("Article created successfully!");
         console.log(response.data);
       } catch (error) {
-        console.error('Error submitting form:', error);
-        alert('Failed to create article. Please try again.');
+        console.error("Error submitting form:", error);
+        alert("Failed to create article. Please try again.");
       }
     },
 
@@ -94,5 +95,6 @@ export default {
   },
 };
 </script>
+
 
 <style scoped src="../css/CreateView.css"></style>
