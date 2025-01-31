@@ -24,6 +24,8 @@ const serverPort = 5000;
 app.use(cors());
 app.use(bodyParser.json());
 
+const client = new MongoClient(uri);
+
 // __dirname für ES-Module simulieren
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -52,7 +54,7 @@ app.post("/api/create-article", upload.single("media"), async (req, res) => {
 
     // **Bild-URL generieren**
     const imageUrl = req.file
-      ? `http://localhost:5000/uploads/${req.file.filename}`
+      ? `http://10.110.48.248:5000/uploads/${req.file.filename}`
       : null;
 
     const articleData = {

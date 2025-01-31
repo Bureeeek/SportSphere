@@ -153,7 +153,7 @@ export default {
     async handleRegister() {
       if (this.registerValid) {
         try {
-          const response = await axios.post("http://localhost:5500/api/register", {
+          const response = await axios.post("http://10.110.48.248:5500/api/register", {
             myUsername: this.myUsername,
             email: this.email.value,
             firstName: this.firstName,
@@ -171,7 +171,7 @@ export default {
     async handleSignIn() {
       if (this.loginValid) {
         try {
-          const response = await axios.post("http://localhost:5600/api/login", {
+          const response = await axios.post("http://10.110.48.248:5600/api/login", {
             email: this.email.value,
             password: this.password.value,
           });
@@ -179,7 +179,7 @@ export default {
           localStorage.setItem("email", response.data.email);
           localStorage.setItem("firstname", response.data.firstname);
           localStorage.setItem("lastname", response.data.lastname);
-          localStorage.setItem("username", response.data.username);
+          localStorage.setItem("username", response.data.username)
 
           this.$router.push('/')
         } catch (error) {
