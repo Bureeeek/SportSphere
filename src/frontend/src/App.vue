@@ -7,18 +7,36 @@
         <img :src="logoSrc" alt="Logo" class="logo" />
       </div>
       <ul>
-        <li><router-link to="/#">News</router-link></li>
-        <li><router-link to="/create">Create</router-link></li>
-        <li><router-link to="/about">About</router-link></li>
+        <li>
+          <router-link to="/#">
+            <NewspaperIcon class="icon" />
+            <span class="link-text">News</span>
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/create">
+            <PencilIcon class="icon" />
+            <span class="link-text">Create</span>
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/about">
+            <InformationIcon class="icon" />
+            <span class="link-text">About</span>
+          </router-link>
+        </li>
         <li>
           <router-link to="/account">
             <AccountIcon class="icon" />
-            Account
+            <span class="link-text">Account</span>
           </router-link>
         </li>
       </ul>
       <button @click="toggleTheme" class="toggle-btn">
-        {{ theme === 'dark-mode' ? 'Switch to Light Mode' : 'Switch to Dark Mode' }}
+        <ThemeLightDarkIcon class="icon" />
+        <span class="link-text">
+          {{ theme === 'dark-mode' ? 'Switch to Light Mode' : 'Switch to Dark Mode' }}
+        </span>
       </button>
     </nav>
 
@@ -32,11 +50,19 @@
 <script>
 import { provide, reactive, computed } from "vue";
 import AccountIcon from "vue-material-design-icons/Account.vue";
+import NewspaperIcon from "vue-material-design-icons/Newspaper.vue";
+import PencilIcon from "vue-material-design-icons/Pencil.vue";
+import InformationIcon from "vue-material-design-icons/Information.vue";
+import ThemeLightDarkIcon from "vue-material-design-icons/ThemeLightDark.vue";
 
 export default {
   name: "App",
   components: {
     AccountIcon,
+    NewspaperIcon,
+    PencilIcon,
+    InformationIcon,
+    ThemeLightDarkIcon,
   },
   setup() {
     const state = reactive({
@@ -88,8 +114,8 @@ body {
 
 /* Sidebar */
 .sidebar {
-  width: 250px;
-  padding: 30px;
+  width: 80px;
+  padding: 20px;
   background-color: var(--sidebar-bg);
   color: var(--sidebar-text);
   display: flex;
@@ -97,12 +123,17 @@ body {
   justify-content: space-between;
   height: 100vh;
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease;
+  transition: width 0.4s ease;
+  overflow: hidden;
+}
+
+.sidebar:hover {
+  width: 250px;
 }
 
 .logo-container {
   text-align: center;
-  margin-right: 150px;
+  margin-bottom: 20px;
 }
 
 .logo {
@@ -125,13 +156,13 @@ body {
 }
 
 .sidebar li a {
-  color: var(--link-color);
-  padding: 12px 20px;
-  border-radius: 8px;
-  text-decoration: none;
   display: flex;
   align-items: center;
-  gap: 10px; /* Abstand zwischen Icon und Text */
+  color: var(--link-color);
+  padding: 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  gap: 15px; /* Einheitlicher Abstand zwischen Icon und Text */
   font-weight: 500;
   transition: background-color 0.3s ease;
 }
@@ -142,13 +173,31 @@ body {
 }
 
 .icon {
+  flex-shrink: 0;
   width: 24px;
   height: 24px;
   fill: var(--link-color);
 }
 
+.link-text {
+  display: none;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  transform: translateX(-10px);
+}
+
+.sidebar:hover .link-text {
+  display: inline;
+  opacity: 1;
+  transform: translateX(0);
+}
+
 .toggle-btn {
-  margin-bottom: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 15px;
   padding: 12px 20px;
   font-size: 16px;
   background-color: var(--button-bg);
@@ -159,8 +208,10 @@ body {
   transition: background-color 0.3s ease;
 }
 
-.toggle-btn:hover {
-  background-color: var(--button-hover-bg);
+.toggle-btn .icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
 }
 
 /* Dark Mode */
@@ -179,7 +230,7 @@ body {
 /* Light Mode */
 .light-mode {
   --background-color: #f4f4f9;
-  --text-color: #000000; /* Ändern zu Schwarz */
+  --text-color: #000000;
   --sidebar-bg: #ffffff;
   --sidebar-text: #333333;
   --link-color: #0056b3;
