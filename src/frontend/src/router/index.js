@@ -5,6 +5,8 @@ import CreateView from "../views/CreateView.vue";
 import AccountView from "../views/AccountView.vue";
 import NewsView from "../views/NewsView.vue";
 import SignUpView from "@/views/SignUpView.vue";
+import VerificationFormView from "@/views/VerificationFormView.vue";
+import AdminPanelView from "@/views/AdminPanelView.vue";
 
 const routes = [
   {
@@ -39,6 +41,18 @@ const routes = [
     name: "signup",
     component: SignUpView,
   },
+  {
+    path: "/get-verified",
+    name: "verification-form",
+    component: VerificationFormView,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/admin",
+    name: "admin",
+    component: AdminPanelView,
+    meta: { requiresAuth: true },
+  }
 ];
 
 const router = createRouter({
