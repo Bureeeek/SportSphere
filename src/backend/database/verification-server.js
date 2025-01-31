@@ -1,11 +1,13 @@
-require("dotenv").config();
+import dotenv from "dotenv";
 import express, { json } from "express";
 import { connect, Schema, model } from "mongoose";
 import cors from "cors";
+import { MongoClient } from "mongodb";
 
 const app = express();
 const serverPort = 5800;
 
+dotenv.config();
 
 // MongoDB connection details
 const username = process.env.MONGO_USERNAME;
@@ -65,7 +67,7 @@ app.get("/api/verify-user", async (req, res) => {
     const db = client.db(dbName);
     const verificationCollection = db.collection(collectionName);
 
-    const requests = await db.collection(verificationCollection).find().toArray();
+    const requests = await verificationCollection.find().toArray();
     res.json(requests);
   } catch (error) {
     res.status(500).json({ message: "Error fetching data" });
