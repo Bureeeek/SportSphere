@@ -121,6 +121,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  align-items: center; /* Center logo and icons */
   height: 100vh;
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
   transition: width 0.4s ease;
@@ -132,14 +133,19 @@ body {
 }
 
 .logo-container {
-  text-align: center;
   margin-bottom: 20px;
 }
 
 .logo {
-  max-width: 100%;
-  max-height: 80px;
+  width: 50px;
+  height: 50px;
   object-fit: contain;
+  transition: all 0.3s ease;
+}
+
+.sidebar:hover .logo {
+  width: 70px;
+  height: 70px;
 }
 
 .sidebar ul {
@@ -148,11 +154,8 @@ body {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  margin-bottom: 200px;
-}
-
-.sidebar li {
-  font-size: 18px;
+  flex-grow: 1;
+  justify-content: center; /* Icons are centered */
 }
 
 .sidebar li a {
@@ -162,7 +165,7 @@ body {
   padding: 12px;
   border-radius: 8px;
   text-decoration: none;
-  gap: 15px; /* Einheitlicher Abstand zwischen Icon und Text */
+  gap: 15px;
   font-weight: 500;
   transition: background-color 0.3s ease;
 }
@@ -201,11 +204,12 @@ body {
   padding: 12px 20px;
   font-size: 16px;
   background-color: var(--button-bg);
-  color: white;
+  color: var(--button-text-color);
   border: none;
   cursor: pointer;
   border-radius: 6px;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  margin-bottom: 20px; /* Abstand nach unten hinzugefügt */
 }
 
 .toggle-btn .icon {
@@ -214,6 +218,10 @@ body {
   height: 24px;
 }
 
+.light-mode .toggle-btn {
+  background-color: #333333; /* Dunkler Hintergrund nur für den Light Mode */
+  color: #ffffff; /* Helle Schrift nur für den Light Mode */
+}
 /* Dark Mode */
 .dark-mode {
   --background-color: #0d1117;
@@ -224,7 +232,6 @@ body {
   --link-hover-bg: #1f2937;
   --link-hover-color: #58a6ff;
   --button-bg: #21262d;
-  --button-hover-bg: #30363d;
 }
 
 /* Light Mode */
@@ -235,9 +242,6 @@ body {
   --sidebar-text: #333333;
   --link-color: #0056b3;
   --link-hover-bg: #e0e0e0;
-  --link-hover-color: #0056b3;
-  --button-bg: #d1d5db;
-  --button-hover-bg: #9ca3af;
 }
 
 /* Main Content */
@@ -248,64 +252,5 @@ body {
   background-color: var(--background-color);
   color: var(--text-color);
   transition: all 0.3s ease;
-}
-
-/* Responsive Styles */
-@media (max-width: 1024px) {
-  .app-container {
-    flex-direction: column;
-  }
-
-  .sidebar {
-    width: 100%;
-    height: auto;
-    position: relative;
-    box-shadow: none;
-  }
-
-  .main-content {
-    margin-top: 20px;
-  }
-}
-
-@media (max-width: 768px) {
-  .sidebar {
-    padding: 20px;
-  }
-
-  .sidebar ul {
-    gap: 15px;
-  }
-
-  .sidebar li a {
-    font-size: 16px;
-    padding: 10px 15px;
-  }
-
-  .toggle-btn {
-    width: 100%;
-    font-size: 14px;
-  }
-
-  .main-content {
-    padding: 15px;
-  }
-}
-
-@media (max-width: 480px) {
-  .sidebar {
-    width: 100%;
-    padding: 15px;
-  }
-
-  .sidebar li a {
-    font-size: 14px;
-    padding: 10px 12px;
-  }
-
-  .toggle-btn {
-    font-size: 14px;
-    padding: 10px;
-  }
 }
 </style>
