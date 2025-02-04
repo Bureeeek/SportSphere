@@ -132,20 +132,16 @@ body {
   width: 250px;
 }
 
-.logo-container {
-  margin-bottom: 20px;
-}
 
 .logo {
-  width: 50px;
-  height: 50px;
+  max-width: 80%;
+  max-height: 80px;
   object-fit: contain;
-  transition: all 0.3s ease;
+  transition: transform 0.4s ease; /* Animation für die Verschiebung */
 }
 
 .sidebar:hover .logo {
-  width: 70px;
-  height: 70px;
+  transform: translateX(-85px); /* Verschiebt das Logo weiter nach links */
 }
 
 .sidebar ul {
@@ -162,10 +158,10 @@ body {
   display: flex;
   align-items: center;
   color: var(--link-color);
-  padding: 12px;
+  padding: 15px 25px; /* Vergrößerte anklickbare Fläche */
   border-radius: 8px;
   text-decoration: none;
-  gap: 15px;
+  gap: 15px; /* Einheitlicher Abstand zwischen Icon und Text */
   font-weight: 500;
   transition: background-color 0.3s ease;
 }
@@ -173,7 +169,10 @@ body {
 .sidebar li a:hover {
   background-color: var(--link-hover-bg);
   color: var(--link-hover-color);
+  width: 190px;
+  
 }
+
 
 .icon {
   flex-shrink: 0;
@@ -194,6 +193,7 @@ body {
   display: inline;
   opacity: 1;
   transform: translateX(0);
+  
 }
 
 .toggle-btn {
