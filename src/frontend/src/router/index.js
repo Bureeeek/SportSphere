@@ -4,6 +4,7 @@ import AboutView from "../views/AboutView.vue";
 import CreateView from "../views/CreateView.vue";
 import AccountView from "../views/AccountView.vue";
 import NewsView from "../views/NewsView.vue";
+import NewsDetailView from "../views/NewsDetailView.vue"; // 👈 Import hinzugefügt
 import SignUpView from "@/views/SignUpView.vue";
 import VerificationFormView from "@/views/VerificationFormView.vue";
 import AdminPanelView from "@/views/AdminPanelView.vue";
@@ -29,12 +30,18 @@ const routes = [
     path: "/account",
     name: "account",
     component: AccountView,
-    meta: { requiresAuth: true }, // Add metadata to mark routes that need authentication
+    meta: { requiresAuth: true },
   },
   {
     path: "/news",
     name: "news",
     component: NewsView,
+  },
+  {
+    path: "/news/:id",
+    name: "news-detail",
+    component: NewsDetailView, // ✅ Richtig eingebunden
+    props: true,
   },
   {
     path: "/signup",
@@ -52,7 +59,7 @@ const routes = [
     name: "admin",
     component: AdminPanelView,
     meta: { requiresAuth: true },
-  }
+  },
 ];
 
 const router = createRouter({
@@ -60,13 +67,13 @@ const router = createRouter({
   routes,
 });
 
-// Navigation guard for authentication
+// Navigation guard für geschützte Routen
 router.beforeEach((to, from, next) => {
-  const isAuthenticated = localStorage.getItem("userToken"); // Check if token exists in localStorage
+  const isAuthenticated = localStorage.getItem("userToken");
 
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     if (!isAuthenticated) {
-      next({ name: "signup", query: { redirect: to.fullPath } }); // Redirect to signup and include the original path
+      next({ name: "signup", query: { redirect: to.fullPath } });
     } else {
       next();
     }

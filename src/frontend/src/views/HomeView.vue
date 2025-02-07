@@ -10,7 +10,8 @@
     </div>
 
     <div v-else>
-      <div v-if="articles.length > 0" class="main-article">
+      <!-- Hauptartikel klickbar machen -->
+      <div v-if="articles.length > 0" class="main-article" @click="goToArticle(articles[0]._id)">
         <div class="article-image-container">
           <img v-if="articles[0].media && articles[0].media.length > 0" 
                :src="articles[0].media[0]" 
@@ -25,8 +26,11 @@
         </div>
       </div>
 
+      <!-- Kleinere Artikel klickbar machen -->
       <div class="secondary-articles">
-        <div v-for="(article) in articles.slice(1)" :key="article._id" class="secondary-article">
+        <div v-for="(article) in articles.slice(1)" :key="article._id" 
+             class="secondary-article" 
+             @click="goToArticle(article._id)">
           <div class="article-image-container">
             <img v-if="article.media && article.media.length > 0" 
                  :src="article.media[0]" 
@@ -75,11 +79,13 @@ export default {
     },
     formatDate(dateString) {
       return dateString ? new Date(dateString).toLocaleDateString() : "Unknown date";
+    },
+    goToArticle(id) {
+      this.$router.push({ name: "news-detail", params: { id } });
     }
   },
 };
 </script>
-
 
 
 

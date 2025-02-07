@@ -1,12 +1,13 @@
-import { MongoClient } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
 
-const app = express();
 dotenv.config();
+const app = express();
 
+// MongoDB Config
 const username = process.env.MONGO_USERNAME;
 const password = process.env.MONGO_PASSWORD;
 const host = process.env.MONGO_HOST;
@@ -20,10 +21,9 @@ app.use(cors());
 app.use(bodyParser.json());
 
 const client = new MongoClient(uri);
-
 let db;
 
-// Establish connection once when the server starts
+// Datenbankverbindung herstellen
 client
   .connect()
   .then(() => {
@@ -34,26 +34,49 @@ client
     console.error("❌ Fehler bei der Verbindung zur MongoDB:", error);
   });
 
+// **ALLE Artikel abrufen**
 app.get("/api/articles", async (req, res) => {
   try {
-    if (!db) {
+    if (!db)
       return res.status(500).json({ error: "Keine Datenbankverbindung" });
-    }
 
     const articles = await db.collection(collectionName).find().toArray();
-    res.json(
-      articles.map((article) => ({
-        ...article,
-       imageUrl: article.imageUrl || null, // Falls kein Bild existiert, bleibt es NULL
-      }))
-    );
+    res.json(articles);
   } catch (error) {
     console.error("❌ Fehler beim Abrufen der Artikel:", error);
     res.status(500).json({ error: "Fehler beim Abrufen der Artikel" });
   }
 });
 
+// **EINZELNEN Artikel abrufen**
+app.get("/api/articles/:id", async (req, res) => {
+  try {
+    if (!db)
+      return res.status(500).json({ error: "Keine Datenbankverbindung" });
+
+    const articleId = req.params.id;
+
+    // Überprüfen, ob die ID gültig ist
+    if (!ObjectId.isValid(articleId)) {
+      return res.status(400).json({ error: "Ungültige ID" });
+    }
+
+    const article = await db
+      .collection(collectionName)
+      .findOne({ _id: new ObjectId(articleId) });
+
+    if (!article) {
+      return res.status(404).json({ error: "Artikel nicht gefunden" });
+    }
+
+    res.json(article);
+  } catch (error) {
+    console.error("❌ Fehler beim Abrufen des Artikels:", error);
+    res.status(500).json({ error: "Fehler beim Abrufen des Artikels" });
+  }
+});
+
 const PORT = 5001;
 app.listen(PORT, () => {
-  console.log(`✅ API läuft auf http://10.110.48.248:${PORT}`);
+  console.log(`✅ API läuft auf http://localhost:${PORT}`);
 });
