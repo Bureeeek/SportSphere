@@ -55,7 +55,7 @@ app.post("/api/create-article", upload.single("media"), async (req, res) => {
 
     // 🌟 Bild-URL speichern
     const imageUrl = req.file
-      ? `http://localhost:5000/uploads/${req.file.filename}`
+      ? `http://10.110.48.248:5000/uploads/${req.file.filename}`
       : null;
 
     const articleData = {
@@ -66,6 +66,7 @@ app.post("/api/create-article", upload.single("media"), async (req, res) => {
       content: req.body.content,
       publicationDate: new Date(),
       media: imageUrl ? [imageUrl] : [],
+      authorUsername: req.body.username,
     };
 
     const result = await collection.insertOne(articleData);
@@ -77,6 +78,27 @@ app.post("/api/create-article", upload.single("media"), async (req, res) => {
   } catch (err) {
     console.error("Error:", err);
     res.status(500).json({ message: "Error creating article", error: err });
+  } finally {
+    await client.close();
+  }
+});
+
+// Get articles by user
+app.get("/api/my-articles", async (req, res) => {
+  const { username } = req.query;
+
+  try {
+    await client.connect();
+    const db = client.db(dbName);
+    const collection = db.collection("news-articles");
+
+    // Find articles where the author's email matches
+    const articles = await collection.find({ authorUsername: username }).toArray();
+
+    res.json(articles);
+  } catch (err) {
+    console.error("Error fetching articles:", err);
+    res.status(500).json({ message: "Error retrieving articles" });
   } finally {
     await client.close();
   }

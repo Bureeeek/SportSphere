@@ -5,13 +5,11 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { MongoClient } from 'mongodb';
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
 
 dotenv.config();
 
 const app = express();
 const serverPort = 5600;
-const jwtSecret = process.env.JWT_SECRET; // Replace with a secure secret in production
 
 // MongoDB connection details
 const username = process.env.MONGO_USERNAME;
@@ -60,17 +58,15 @@ app.post('/api/login', async (req, res) => {
       return res.status(400).json({ message: 'Invalid email or password.' });
     }
 
-    // Generate JWT token
-    const token = jwt.sign({ email: user.email, id: user._id }, jwtSecret, { expiresIn: '72h' });
-
     // Return the token and user information in JSON format
     res.status(200).json({
-      token,
+      token: user.userToken,
       email: user.email,
       firstname: user.firstName,
       lastname: user.lastName,
       username: user.myUsername
     });
+
   } catch (err) {
     console.error('Error during login:', err);
     res.status(500).json({ message: 'An error occurred during login. Please try again.' });

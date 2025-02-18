@@ -7,48 +7,94 @@
         <p class="email">{{ accountInfo.email }}</p>
       </div>
       <ul class="menu">
-        <li>Personal Information</li>
-        <li>My News Contributions</li>
-        <li>Get Verified</li>
+        <li @click="activeSection = 'personal'" :class="{ active: activeSection === 'personal' }">Personal Information</li>
+        <li @click="activeSection = 'news'" :class="{ active: activeSection === 'news' }">My News Contributions</li>
+        <li @click="activeSection = 'verification'" :class="{ active: activeSection === 'verification' }">Get Verified</li>
       </ul>
     </div>
-    <div class="account-card">
+
+    <div class="account-card" v-if="activeSection === 'personal'">
       <h2 class="title">Personal Information</h2>
       <div class="info-grid">
+        <!-- Name -->
         <div class="info-item">
           <p><strong>Name:</strong></p>
-          <p>{{ accountInfo.firstName }} {{ accountInfo.lastName }}</p>
-          <button class="btn-design">Change Name</button>
+          <div v-if="isEditing.name">
+            <input v-model="editedValues.firstName" class="edit-input" placeholder="First Name" />
+            <input v-model="editedValues.lastName" class="edit-input" placeholder="Last Name" />
+            <input type="password" v-model="confirmPassword" class="edit-input" placeholder="Confirm Password" />
+            <button class="btn-save" @click="saveChange('name')">Save</button>
+          </div>
+          <div v-else>
+            <p>{{ accountInfo.firstName }} {{ accountInfo.lastName }}</p>
+            <button class="btn-design" @click="toggleEdit('name')">Change Name</button>
+          </div>
         </div>
+
+        <!-- Email -->
         <div class="info-item">
           <p><strong>Email:</strong></p>
-          <p>{{ accountInfo.email }}</p>
-          <button class="btn-design">Change E-Mail</button>
+          <div v-if="isEditing.email">
+            <input v-model="editedValues.email" class="edit-input" />
+            <input type="password" v-model="confirmPassword" class="edit-input" placeholder="Confirm Password" />
+            <button class="btn-save" @click="saveChange('email')">Save</button>
+          </div>
+          <div v-else>
+            <p>{{ accountInfo.email }}</p>
+            <button class="btn-design" @click="toggleEdit('email')">Change Email</button>
+          </div>
         </div>
+
+        <!-- Username -->
         <div class="info-item">
           <p><strong>Username:</strong></p>
-          <p>{{ accountInfo.username }}</p>
-          <button class="btn-design">Change Username</button>
+          <div v-if="isEditing.username">
+            <input v-model="editedValues.username" class="edit-input" />
+            <input type="password" v-model="confirmPassword" class="edit-input" placeholder="Confirm Password" />
+            <button class="btn-save" @click="saveChange('username')">Save</button>
+          </div>
+          <div v-else>
+            <p>{{ accountInfo.username }}</p>
+            <button class="btn-design" @click="toggleEdit('username')">Change Username</button>
+          </div>
         </div>
+
+        <!-- Password -->
         <div class="info-item">
           <p><strong>Password:</strong></p>
-          <p>********</p>
-          <button class="btn-design">Change Password</button>
+          <div v-if="isEditing.password">
+            <input type="password" v-model="editedValues.password" class="edit-input" placeholder="New Password" />
+            <input type="password" v-model="confirmPassword" class="edit-input" placeholder="Confirm Current Password" />
+            <button class="btn-save" @click="saveChange('password')">Save</button>
+          </div>
+          <div v-else>
+            <p>********</p>
+            <button class="btn-design" @click="toggleEdit('password')">Change Password</button>
+          </div>
         </div>
       </div>
+      <button class="sign-out-btn" @click="signOut">Sign Out</button>
+    </div>
 
-      <h2 class="title">Get Verified</h2>
-      <div class="verification-section">
-        <p>Become a verified contributor to gain more visibility and credibility for your articles.</p>
-        <button class="btn-design">Apply for Verification</button>
-      </div>
-
+    <div class="account-card" v-if="activeSection === 'news'">
       <h2 class="title">My News Contributions</h2>
+
       <div class="contributions-section">
-        <p>You have not submitted any articles yet.</p>
-        <button class="btn-design">Write a New Article</button>
+        <p v-if="myArticles.length === 0">You have not submitted any articles yet.</p>
+        <ul v-else>
+          <li v-for="article in myArticles" :key="article._id">
+            <strong>{{ article.title }}</strong> - {{ new Date(article.publicationDate).toLocaleDateString() }}
+          </li>
+        </ul>
+        <button class="btn-design" @click="goToCreateArticle">Write a New Article</button>
       </div>
 
+      <button class="sign-out-btn" @click="signOut">Sign Out</button>
+    </div>
+
+    <div class="account-card" v-if="activeSection === 'verification'">
+      <h2 class="title">Get Verified</h2>
+      <p>Verification process details go here...</p>
       <button class="sign-out-btn" @click="signOut">Sign Out</button>
     </div>
   </div>
@@ -59,27 +105,90 @@ export default {
   name: "AccountInfo",
   data() {
     return {
+      activeSection: 'personal',
       accountInfo: {
         email: localStorage.getItem("email"),
         firstName: localStorage.getItem("firstname"),
         lastName: localStorage.getItem("lastname"),
         username: localStorage.getItem("username"),
       },
+      isEditing: {
+        name: false,
+        email: false,
+        username: false,
+        password: false,
+      },
+      editedValues: {
+        firstName: "",
+        lastName: "",
+        email: "",
+        username: "",
+        password: "",
+      },
+      confirmPassword: "",
+      myArticles: [],
     };
   },
   methods: {
-    async fetchAccountInfo() {
+    toggleEdit(field) {
+      this.isEditing[field] = true;
+      if (field === "name") {
+        this.editedValues.firstName = this.accountInfo.firstName;
+        this.editedValues.lastName = this.accountInfo.lastName;
+      } else {
+        this.editedValues[field] = this.accountInfo[field] || "";
+      }
+    },
+    async saveChange(field) {
+      if (!this.confirmPassword.trim()) {
+        alert("Please confirm your password.");
+        return;
+      }
+
       try {
         const token = localStorage.getItem("userToken");
         if (!token) {
           alert("You are not logged in.");
           return;
         }
-        // Fetch logic can be implemented here
+
+        let requestBody = { field, value: this.editedValues[field], confirmPassword: this.confirmPassword };
+        if (field === "name") {
+          requestBody = {
+            field: "name",
+            firstName: this.editedValues.firstName,
+            lastName: this.editedValues.lastName,
+            confirmPassword: this.confirmPassword,
+          };
+        }
+
+        const response = await fetch("http://localhost:5500/api/update-account", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(requestBody),
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          if (field === "name") {
+            this.accountInfo.firstName = this.editedValues.firstName;
+            this.accountInfo.lastName = this.editedValues.lastName;
+            localStorage.setItem("firstname", this.editedValues.firstName);
+            localStorage.setItem("lastname", this.editedValues.lastName);
+          } else {
+            this.accountInfo[field] = this.editedValues[field];
+            localStorage.setItem(field, this.editedValues[field]);
+          }
+          this.isEditing[field] = false;
+        } else {
+          alert(data.message || "Update failed.");
+        }
       } catch (error) {
-        console.error("Error fetching account info:", error);
-        alert("Failed to fetch account information. Please log in again.");
-        this.signOut();
+        console.error("Update error:", error);
+        alert("Something went wrong. Please try again.");
       }
     },
     signOut() {
@@ -87,9 +196,9 @@ export default {
       alert("You have been signed out.");
       this.$router.push("/signup");
     },
+    goToCreateArticle() {
+    this.$router.push("/create");
   },
-  mounted() {
-    this.fetchAccountInfo();
   },
 };
 </script>
@@ -229,5 +338,24 @@ export default {
 
 .sign-out-btn:hover {
   background-color: #b45562;
+}
+
+.edit-input {
+  width: 80%;
+  padding: 8px;
+  margin-right: 5px;
+}
+
+.btn-save {
+  background-color: #4caf50;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.btn-save:hover {
+  background-color: #45a049;
 }
 </style>
