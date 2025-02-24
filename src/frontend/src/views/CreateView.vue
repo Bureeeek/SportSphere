@@ -61,6 +61,8 @@ export default {
   },
   methods: {
     async submitForm() {
+      const username = localStorage.getItem("username"); // Get username from localStorage
+
       try {
         const formData = new FormData();
         formData.append("title", this.news.title);
@@ -69,6 +71,10 @@ export default {
         formData.append("tags", this.news.tags);
         formData.append("content", this.news.content);
         formData.append("publicationDate", new Date().toISOString());
+        formData.append("authorUsername", username); 
+
+        console.log(localStorage.getItem("username"));
+
 
         if (this.mediaFile) {
           formData.append("media", this.mediaFile);

@@ -66,7 +66,7 @@ app.post("/api/create-article", upload.single("media"), async (req, res) => {
       content: req.body.content,
       publicationDate: new Date(),
       media: imageUrl ? [imageUrl] : [],
-      authorUsername: req.body.username,
+      authorUsername: req.body.authorUsername,
     };
 
     const result = await collection.insertOne(articleData);

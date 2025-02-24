@@ -31,9 +31,8 @@
         </div>
         <div class="article-content">
           <h2>{{ filteredArticles[0].title }}</h2>
-          <p><strong>Summary:</strong> {{ filteredArticles[0].summary }}</p>
-          <p><strong>Category:</strong> {{ filteredArticles[0].category }}</p>
-          <p><strong>Publication Date:</strong> {{ formatDate(filteredArticles[0].publicationDate) }}</p>
+          <p>{{ filteredArticles[0].summary }}</p>
+          <p>{{ formatDate(filteredArticles[0].publicationDate) }}</p>
         </div>
       </div>
 
@@ -50,9 +49,8 @@
           </div>
           <div class="article-content">
             <h3>{{ article.title }}</h3>
-            <p><strong>Summary:</strong> {{ article.summary }}</p>
-            <p><strong>Category:</strong> {{ article.category }}</p>
-            <p><strong>Publication Date:</strong> {{ formatDate(article.publicationDate) }}</p>
+            <p>{{ article.summary }}</p>
+            <p>{{ formatDate(article.publicationDate) }}</p>
           </div>
         </div>
       </div>
