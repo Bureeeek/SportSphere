@@ -18,6 +18,7 @@
           <div class="meta-info">
             <span class="category">{{ article.category }}</span>
             <span class="date">{{ formatDate(article.publicationDate) }}</span>
+            <span class="username">{{ article.authorUsername }}</span>
           </div>
           <p v-html="formattedContent"></p>
         </div>
