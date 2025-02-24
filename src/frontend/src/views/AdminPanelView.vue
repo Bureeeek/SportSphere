@@ -49,7 +49,7 @@
     methods: {
       async fetchRequests() {
         try {
-          const response = await axios.get("http://10.110.48.248:5800/api/verify-user");
+          const response = await axios.get("http://localhost:5800/api/verify-user");
           this.requests = response.data;
         } catch (error) {
           console.error("Error fetching requests:", error);
@@ -57,7 +57,7 @@
       },
       async updateStatus(id, status) {
         try {
-          await axios.put(`http://10.110.48.248:5800/api/verify-user/${id}`, { status });
+          await axios.put(`http://localhost:5800/api/verify-user/${id}`, { status });
           this.fetchRequests(); // Refresh the data
         } catch (error) {
           console.error("Error updating status:", error);

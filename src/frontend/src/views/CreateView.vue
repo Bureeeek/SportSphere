@@ -69,7 +69,6 @@ export default {
         formData.append("tags", this.news.tags);
         formData.append("content", this.news.content);
         formData.append("publicationDate", new Date().toISOString());
-        formData.append("authorUsername". localStorage.username);
 
         if (this.mediaFile) {
           formData.append("media", this.mediaFile);
@@ -77,7 +76,7 @@ export default {
         }
 
         const response = await axios.post(
-          "http://10.110.48.248:5000/api/create-article",
+          "http://localhost:5000/api/create-article",
           formData,
           { headers: { "Content-Type": "multipart/form-data" } }
         );

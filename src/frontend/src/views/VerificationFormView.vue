@@ -127,7 +127,7 @@ export default {
       };
 
       try {
-        await axios.post("http://10.110.48.248:5800/api/verify-user", verificationData);
+        await axios.post("http://localhost:5800/api/verify-user", verificationData);
         alert("Your verification request has been submitted!");
       } catch (error) {
         console.error("Error submitting verification request:", error);

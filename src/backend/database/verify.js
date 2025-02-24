@@ -63,5 +63,5 @@ app.get('/api/verify-email', async (req, res) => {
 
 // Start the server
 app.listen(serverPort, () => {
-  console.log(`Server running on http://10.110.48.248:${serverPort}`);
+  console.log(`Server running on http://localhost:${serverPort}`);
 });

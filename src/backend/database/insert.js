@@ -55,7 +55,7 @@ app.post("/api/create-article", upload.single("media"), async (req, res) => {
 
     // 🌟 Bild-URL speichern
     const imageUrl = req.file
-      ? `http://10.110.48.248:5000/uploads/${req.file.filename}`
+      ? `http://localhost:5000/uploads/${req.file.filename}`
       : null;
 
     const articleData = {

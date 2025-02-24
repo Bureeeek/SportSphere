@@ -2,6 +2,17 @@
   <div class="news-page">
     <h1>News Articles</h1>
 
+    <!-- Filter Dropdown -->
+    <div class="filter-container">
+      <select v-model="selectedCategory" @change="filterArticles" class="filter-dropdown">
+        <option value="All">All</option>
+        <option value="Football">Football</option>
+        <option value="Basketball">Basketball</option>
+        <option value="Tennis">Tennis</option>
+        <option value="Badminton">Badminton</option>
+      </select>
+    </div>
+
     <div v-if="loading" class="loading">Loading articles...</div>
 
     <div v-else-if="error" class="error">
@@ -11,24 +22,24 @@
 
     <div v-else>
       <!-- Hauptartikel klickbar machen -->
-      <div v-if="articles.length > 0" class="main-article" @click="goToArticle(articles[0]._id)">
+      <div v-if="filteredArticles.length > 0" class="main-article" @click="goToArticle(filteredArticles[0]._id)">
         <div class="article-image-container">
-          <img v-if="articles[0].media && articles[0].media.length > 0" 
-               :src="articles[0].media[0]" 
+          <img v-if="filteredArticles[0].media && filteredArticles[0].media.length > 0" 
+               :src="filteredArticles[0].media[0]" 
                alt="Main Article image" 
                class="main-article-image" />
         </div>
         <div class="article-content">
-          <h2>{{ articles[0].title }}</h2>
-          <p><strong>Summary:</strong> {{ articles[0].summary }}</p>
-          <p><strong>Category:</strong> {{ articles[0].category }}</p>
-          <p><strong>Publication Date:</strong> {{ formatDate(articles[0].publicationDate) }}</p>
+          <h2>{{ filteredArticles[0].title }}</h2>
+          <p><strong>Summary:</strong> {{ filteredArticles[0].summary }}</p>
+          <p><strong>Category:</strong> {{ filteredArticles[0].category }}</p>
+          <p><strong>Publication Date:</strong> {{ formatDate(filteredArticles[0].publicationDate) }}</p>
         </div>
       </div>
 
       <!-- Kleinere Artikel klickbar machen -->
       <div class="secondary-articles">
-        <div v-for="(article) in articles.slice(1)" :key="article._id" 
+        <div v-for="article in filteredArticles.slice(1)" :key="article._id" 
              class="secondary-article" 
              @click="goToArticle(article._id)">
           <div class="article-image-container">
@@ -57,6 +68,8 @@ export default {
   data() {
     return {
       articles: [],
+      filteredArticles: [],
+      selectedCategory: "All",
       loading: true,
       error: null,
     };
@@ -70,6 +83,7 @@ export default {
       try {
         const response = await axios.get('http://localhost:5001/api/articles');
         this.articles = response.data;
+        this.filteredArticles = response.data;
       } catch (err) {
         this.error = 'Failed to load articles. Please try again later.';
         console.error(err);
@@ -82,21 +96,31 @@ export default {
     },
     goToArticle(id) {
       this.$router.push({ name: "news-detail", params: { id } });
+    },
+    filterArticles() {
+      if (this.selectedCategory === "All") {
+        this.filteredArticles = this.articles;
+      } else {
+        this.filteredArticles = this.articles.filter(article => article.category === this.selectedCategory);
+      }
     }
   },
 };
 </script>
 
-
-
 <style scoped>
-.news-page {
-  display: flex;
-  flex-direction: column;
-  gap: 40px;
-  padding: 20px;
-  color: var(--text-color);
-  background-color: var(--background-color);
+/* Filter Dropdown */
+.filter-container {
+  margin-bottom: 20px;
+}
+
+.filter-dropdown {
+  padding: 8px 12px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  background-color: var(--sidebar-bg);
+  color: white;
 }
 
 /* Hauptartikel */
@@ -120,7 +144,7 @@ export default {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 800px;
   object-fit: cover;
   filter: brightness(0.7);
 }
@@ -146,15 +170,16 @@ export default {
 }
 
 .article-content strong {
-  color: #58a6ff; /* Blaue Hervorhebung für wichtige Texte */
+  color: #58a6ff;
 }
 
 /* Sekundäre Artikel */
 .secondary-articles {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(2, 1fr); /* Immer 2 Artikel nebeneinander */
   gap: 20px;
 }
+
 
 .secondary-article {
   position: relative;
@@ -180,7 +205,7 @@ export default {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 450px;
   object-fit: cover;
   filter: brightness(0.8);
 }
@@ -207,14 +232,9 @@ export default {
   opacity: 0.9;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
-  .main-article {
-    height: 250px;
-  }
-
   .secondary-articles {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* 1 Artikel pro Reihe auf kleineren Bildschirmen */
   }
 }
 
